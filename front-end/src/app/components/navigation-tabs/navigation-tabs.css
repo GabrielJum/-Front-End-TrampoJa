@@ -32,9 +32,6 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.tab:hover:not(:disabled) {
-  color: var(--primary);
-}
 
 .tab:disabled {
   cursor: default;
