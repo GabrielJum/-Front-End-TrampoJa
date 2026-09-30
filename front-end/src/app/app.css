@@ -1,0 +1,28 @@
+:host {
+  --primary: #18355a;
+  --primary-700: #10263f;
+  --primary-50: #eef3f9;
+  --accent: #e87425;
+  --accent-600: #d0631a;
+  --accent-50: #fdf1e8;
+
+  --bg: #f7f8fb;
+  --surface: #ffffff;
+  --text: #1b2433;
+  --muted: #5f6b7d;
+  --border: #e4e8ef;
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 28px;
+  --shadow-sm: 0 1px 2px rgb(24 53 90 / 0.06), 0 1px 3px rgb(24 53 90 / 0.04);
+  --shadow: 0 8px 24px -8px rgb(24 53 90 / 0.14);
+  --shadow-lg: 0 24px 48px -16px rgb(24 53 90 / 0.22);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}

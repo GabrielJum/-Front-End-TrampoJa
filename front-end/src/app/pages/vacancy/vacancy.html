@@ -1,0 +1,299 @@
+<app-header />
+
+<main class="container page">
+  <!-- ============ TÍTULO + ABAS ============ -->
+  <div class="page__head">
+    <span class="eyebrow">Área do profissional</span>
+    <h1 class="page__title">Buscar vagas</h1>
+  </div>
+
+  <app-navigation-tabs />
+
+  @if (activeTab() === 'search') {
+    <div class="layout">
+      <!-- ============ FILTROS ============ -->
+      <button type="button" class="btn btn--outline filters-toggle" (click)="toggleFilters()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4" /></svg>
+        Filtros
+        @if (activeFilterCount()) {
+          <span class="count">{{ activeFilterCount() }}</span>
+        }
+      </button>
+
+      <aside class="filters" [class.is-open]="filtersOpen()" aria-label="Filtros">
+        <div class="filters__head">
+          <h2>Filtros</h2>
+          @if (activeFilterCount()) {
+            <button type="button" class="link-btn" (click)="clearFilters()">Limpar</button>
+          }
+        </div>
+
+        <label class="field">
+          <span class="field__label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Localização
+          </span>
+          <select [(ngModel)]="location">
+            <option value="any">Qualquer</option>
+            @for (loc of locations(); track loc) {
+              <option [value]="loc">{{ loc }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+            Categoria
+          </span>
+          <select [(ngModel)]="category">
+            <option value="any">Qualquer</option>
+            @for (cat of categories(); track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" />
+            </svg>
+            Data e hora
+          </span>
+          <select [(ngModel)]="date">
+            <option value="any">Qualquer</option>
+            <option value="today">Hoje</option>
+            <option value="week">Próximos 7 dias</option>
+            <option value="month">Próximos 30 dias</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+            Faixa de preço
+          </span>
+          <select [(ngModel)]="price">
+            <option value="any">Qualquer</option>
+            <option value="upTo100">Até R$ 100</option>
+            <option value="100to150">R$ 100 a R$ 150</option>
+            <option value="over150">Acima de R$ 150</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z" />
+            </svg>
+            Avaliação
+          </span>
+          <select [(ngModel)]="minRating">
+            <option [ngValue]="0">Qualquer</option>
+            <option [ngValue]="3">3 estrelas ou mais</option>
+            <option [ngValue]="4">4 estrelas ou mais</option>
+            <option [ngValue]="5">Apenas 5 estrelas</option>
+          </select>
+        </label>
+
+        <button type="button" class="btn btn--primary btn--block" (click)="applyFilters()">
+          Aplicar filtros
+        </button>
+      </aside>
+
+      <!-- ============ LISTA DE VAGAS ============ -->
+      <section class="results" aria-labelledby="results-title">
+        <svg class="sr-only" aria-hidden="true">
+          <defs>
+            <linearGradient id="star-half">
+              <stop offset="50%" stop-color="currentColor" />
+              <stop offset="50%" stop-color="transparent" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div class="results__head">
+          <h2 id="results-title">Vagas disponíveis</h2>
+          <span class="results__count">
+            {{ totalResults() }} {{ totalResults() === 1 ? 'vaga encontrada' : 'vagas encontradas' }}
+          </span>
+        </div>
+
+        @for (job of visibleJobs(); track job.id) {
+          <article class="job">
+            <div class="job__logo">
+              @if (job.logoUrl) {
+                <img [src]="job.logoUrl" [alt]="'Logo ' + job.company" />
+              } @else {
+                <span aria-hidden="true">{{ job.initials }}</span>
+              }
+            </div>
+
+            <div class="job__body">
+              <div class="job__top">
+                <div>
+                  <span class="tag">{{ job.category }}</span>
+                  <h3 class="job__role">{{ job.role }}</h3>
+                  <p class="job__company">{{ job.company }}</p>
+                </div>
+
+                <div class="rating" [attr.aria-label]="'Avaliação ' + job.rating + ' de 5'">
+                  @for (s of stars; track s) {
+                    <svg
+                      viewBox="0 0 24 24"
+                      class="star"
+                      [class.is-full]="s <= job.rating"
+                      [class.is-half]="s > job.rating && s - 0.5 <= job.rating"
+                      aria-hidden="true"
+                    >
+                      <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z" />
+                    </svg>
+                  }
+                  <span>{{ job.rating.toFixed(1) }}</span>
+                </div>
+              </div>
+
+              <ul class="job__meta">
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  {{ job.dateLabel }}
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                  {{ job.start }} – {{ job.end }}
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {{ job.location }}
+                </li>
+              </ul>
+
+              @if (expandedId() === job.id) {
+                <p class="job__desc">{{ job.description }}</p>
+              }
+
+              <div class="job__footer">
+                <p class="job__price">{{ job.priceLabel }} <small>/ diária</small></p>
+
+                <div class="job__actions">
+                  <button
+                    type="button"
+                    class="btn btn--ghost"
+                    [attr.aria-expanded]="expandedId() === job.id"
+                    (click)="toggleDetails(job.id)"
+                  >
+                    {{ expandedId() === job.id ? 'Ver menos' : 'Ver mais sobre' }}
+                  </button>
+
+                  @if (appliedJobIds().has(job.id)) {
+                    <button type="button" class="btn btn--success" disabled>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                      Candidatura enviada
+                    </button>
+                  } @else {
+                    <button type="button" class="btn btn--accent" (click)="apply(job.id)">
+                      Candidatar-se
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <h3>Nenhuma vaga encontrada</h3>
+            <p>Tente ajustar ou limpar os filtros para ver mais oportunidades.</p>
+            <button type="button" class="btn btn--outline" (click)="clearFilters()">Limpar filtros</button>
+          </div>
+        }
+
+        @if (hasMore()) {
+          <button type="button" class="btn btn--outline load-more" (click)="loadMore()">
+            Ver mais vagas
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+        }
+      </section>
+    </div>
+  } @else {
+    <div class="empty empty--panel">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 6v6l4 2" />
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+      <h3>Em breve</h3>
+      <p>Esta seção ainda está em construção.</p>
+    </div>
+  }
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <p class="footer__brand">Trampo <strong>Já!</strong></p>
+      <p>Conectamos pessoas a oportunidades de trabalho de forma rápida, simples e confiável.</p>
+    </div>
+    <div>
+      <h3>Navegação</h3>
+      <a routerLink="/home">Início</a>
+      <a routerLink="/vagas">Vagas</a>
+      <a routerLink="/empresas">Para empresas</a>
+      <a routerLink="/como-funciona">Como funciona</a>
+    </div>
+    <div>
+      <h3>Ajuda</h3>
+      <a routerLink="/ajuda">Central de ajuda</a>
+      <a routerLink="/faq">Dúvidas frequentes</a>
+      <a routerLink="/termos">Termos de uso</a>
+      <a routerLink="/privacidade">Política de privacidade</a>
+    </div>
+    <div>
+      <h3>Contato</h3>
+      <a href="mailto:contato@trampoja.com">contato&#64;trampoja.com</a>
+      <a href="tel:+5511942343131">(11) 94234-3131</a>
+      <div class="socials">
+        <a href="https://wa.me/5511942343131" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" /></svg>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+        </a>
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <p class="container footer__bottom">© {{ year }} Trampo Já! Todos os direitos reservados.</p>
+</footer>
