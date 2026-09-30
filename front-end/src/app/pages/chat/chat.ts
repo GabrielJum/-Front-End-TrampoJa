@@ -10,12 +10,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Header } from '../../components/header/header';
+import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
 
-interface Tab {
-  label: string;
-  path?: string;
-  badge?: number;
-}
 
 interface Message {
   id: number;
@@ -41,21 +37,13 @@ function now(): string {
 
 @Component({
   selector: 'app-chat',
-  imports: [FormsModule, RouterLink, Header],
+  imports: [FormsModule, Header, NavigationTabs],
   templateUrl: './chat.html',
   styleUrl: './chat.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Chat {
   protected readonly year = new Date().getFullYear();
-
-  protected readonly tabs: Tab[] = [
-    { label: 'Buscar vagas', path: '/vagas' },
-    { label: 'Chat', path: '/chat' },
-    { label: 'Solicitações', badge: 3 },
-    { label: 'Avaliações', badge: 7 },
-    { label: 'Seus dados' },
-  ];
 
   private readonly conversations = signal<Conversation[]>([
     {
@@ -125,7 +113,6 @@ export class Chat {
   });
 
   constructor() {
-    // Mantém a conversa rolada até a última mensagem
     afterRenderEffect(() => {
       this.active();
       const el = this.thread()?.nativeElement;

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Header } from '../../components/header/header';
+import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
 
 type TabId = 'search' | 'chat' | 'requests' | 'reviews' | 'profile';
 type DateFilter = 'any' | 'today' | 'week' | 'month';
@@ -46,7 +47,6 @@ const EMPTY_FILTERS: Filters = {
   minRating: 0,
 };
 
-/** Data relativa a hoje, para os dados de exemplo continuarem válidos. */
 function daysFromToday(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() + days);
@@ -56,7 +56,7 @@ function daysFromToday(days: number): string {
 
 @Component({
   selector: 'app-vacancy',
-  imports: [FormsModule, RouterLink, Header],
+  imports: [FormsModule, RouterLink, Header, NavigationTabs],
   templateUrl: './vacancy.html',
   styleUrl: './vacancy.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,23 +7,7 @@
     <h1 class="page__title">Buscar vagas</h1>
   </div>
 
-  <div class="tabs" role="tablist" aria-label="Seções da conta">
-    @for (tab of tabs; track tab.id) {
-      <button
-        type="button"
-        role="tab"
-        class="tab"
-        [class.is-active]="activeTab() === tab.id"
-        [attr.aria-selected]="activeTab() === tab.id"
-        (click)="selectTab(tab.id)"
-      >
-        {{ tab.label }}
-        @if (tab.badge) {
-          <span class="tab__badge" [attr.aria-label]="tab.badge + ' novas'">{{ tab.badge }}</span>
-        }
-      </button>
-    }
-  </div>
+  <app-navigation-tabs />
 
   @if (activeTab() === 'search') {
     <div class="layout">

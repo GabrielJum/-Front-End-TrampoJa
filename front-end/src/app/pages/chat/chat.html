@@ -7,23 +7,7 @@
     <h1 class="page__title">Chat</h1>
   </div>
 
-  <nav class="tabs" aria-label="Seções da conta">
-    @for (tab of tabs; track tab.label) {
-      @if (tab.path) {
-        <a class="tab" [routerLink]="tab.path" [class.is-active]="tab.path === '/chat'"
-          [attr.aria-current]="tab.path === '/chat' ? 'page' : null">
-          {{ tab.label }}
-        </a>
-      } @else {
-        <button type="button" class="tab" disabled title="Em breve">
-          {{ tab.label }}
-          @if (tab.badge) {
-            <span class="tab__badge" [attr.aria-label]="tab.badge + ' novas'">{{ tab.badge }}</span>
-          }
-        </button>
-      }
-    }
-  </nav>
+  <app-navigation-tabs />
 
   <!-- ============ CHAT ============ -->
   <section class="chat" [class.has-active]="active()">
