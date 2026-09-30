@@ -1,29 +1,4 @@
-<!-- ============ HEADER ============ -->
-<header class="header">
-  <div class="container header__inner">
-    <a routerLink="/home" class="brand" aria-label="Trampo Já! - página inicial">
-      <span class="brand__mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" /></svg>
-      </span>
-      <span class="brand__name">Trampo <strong>Já!</strong></span>
-    </a>
-
-    <nav class="nav" aria-label="Navegação principal">
-      @for (link of navLinks; track link.path) {
-        <a class="nav__link" [class.is-active]="link.path === '/vagas'" [routerLink]="link.path">
-          {{ link.label }}
-        </a>
-      }
-    </nav>
-
-    <a routerLink="/perfil" class="avatar" aria-label="Meu perfil">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21a8 8 0 0 1 16 0" />
-      </svg>
-    </a>
-  </div>
-</header>
+<app-header />
 
 <main class="container page">
   <!-- ============ TÍTULO + ABAS ============ -->

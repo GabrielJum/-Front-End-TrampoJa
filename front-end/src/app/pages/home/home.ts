@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { Header } from '../../components/header/header';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 type CategoryIcon = 'shield' | 'party' | 'moto' | 'helmet' | 'truck' | 'dish';
@@ -18,21 +19,13 @@ interface NavLink {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, RouterLinkActive, DecimalPipe],
+  imports: [DecimalPipe, Header, RouterLink, RouterLinkActive],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
   protected readonly year = new Date().getFullYear();
-  protected readonly menuOpen = signal(false);
-
-  protected readonly navLinks: NavLink[] = [
-    { label: 'Início', path: '/home' },
-    { label: 'Vagas', path: '/vagas' },
-    { label: 'Para empresas', path: '/empresas' },
-    { label: 'Contato', path: '/contato' },
-  ];
 
   protected readonly categories = signal<Category[]>([
     { name: 'Segurança', slug: 'seguranca', jobs: 857, icon: 'shield' },
@@ -61,11 +54,4 @@ export class Home {
     { label: 'Política de privacidade', path: '/privacidade' },
   ];
 
-  protected toggleMenu(): void {
-    this.menuOpen.update((open) => !open);
-  }
-
-  protected closeMenu(): void {
-    this.menuOpen.set(false);
-  }
 }

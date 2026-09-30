@@ -1,0 +1,51 @@
+<header class="header">
+    <div class="container header__inner">
+        <a routerLink="/home" class="brand" aria-label="Trampo Já! - página inicial">
+            <span class="brand__mark">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" />
+                </svg>
+            </span>
+            <span class="brand__name"> Trampo <strong>Já!</strong></span>
+        </a>
+
+        <nav class="nav" [class.nav--open]="menuOpen()" aria-label="Navegação principal">
+            @for (link of navLinks; track link.path) {
+            <a class="nav__link" [routerLink]="link.path" routerLinkActive="nav__link--active" (click)="closeMenu()">
+                {{ link.label }}
+            </a>
+            }
+            <a routerLink="/" class="btn btn--primary nav__cta-mobile" (click)="closeMenu()">Entrar</a>
+        </nav>
+
+        <div class="header__actions">
+            @if (currentUrl !== '/home') {
+                <a routerLink="/perfil" class="avatar" aria-label="Meu perfil">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 21a8 8 0 0 1 16 0" />
+                    </svg>
+                </a>
+
+            } @else {
+                <a routerLink="/" class="btn btn--primary btn--sm header__login">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" />
+                    </svg>
+                    Entrar
+                </a>
+            }
+
+            <button type="button" class="menu-toggle" [attr.aria-expanded]="menuOpen()" aria-label="Abrir menu"
+                (click)="toggleMenu()">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    @if (menuOpen()) {
+                    <path d="M18 6 6 18M6 6l12 12" />
+                    } @else {
+                    <path d="M4 7h16M4 12h16M4 17h16" />
+                    }
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>

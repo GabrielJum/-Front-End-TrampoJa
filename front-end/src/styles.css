@@ -113,3 +113,77 @@ a:focus-visible {
   text-transform: uppercase;
   color: var(--accent);
 }
+
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid rgb(232 116 37 / 0.45);
+  outline-offset: 3px;
+}
+
+.btn--sm {
+  padding: 9px 18px;
+  font-size: 0.9rem;
+}
+
+.btn--lg {
+  padding: 15px 28px;
+  font-size: 1rem;
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.btn--primary:hover {
+  background: var(--primary-700);
+}
+
+.btn--accent {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 10px 24px -10px rgb(232 116 37 / 0.7);
+}
+
+.btn--accent:hover {
+  background: var(--accent-600);
+}
+
+.btn--outline {
+  background: var(--surface);
+  color: var(--primary);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--outline:hover {
+  border-color: var(--primary);
+}

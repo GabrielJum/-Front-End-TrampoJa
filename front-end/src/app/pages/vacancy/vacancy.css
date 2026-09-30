@@ -38,89 +38,6 @@ a:focus-visible {
   cursor: pointer;
 }
 
-/* ---------- Header ---------- */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: rgb(255 255 255 / 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-
-.header__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  height: 72px;
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--primary);
-  text-decoration: none;
-}
-
-.brand__mark {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--primary);
-  color: var(--accent);
-}
-
-.brand__mark svg {
-  fill: currentColor;
-  stroke: none;
-}
-
-.brand__name,
-.footer__brand {
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.brand__name strong,
-.footer__brand strong {
-  color: var(--accent);
-}
-
-.nav {
-  display: flex;
-  gap: 4px;
-}
-
-.nav__link {
-  padding: 8px 14px;
-  border-radius: 999px;
-  color: var(--muted);
-  font-weight: 500;
-  text-decoration: none;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.nav__link:hover,
-.nav__link.is-active {
-  color: var(--primary);
-  background: var(--primary-50);
-}
-
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--primary-50);
-  color: var(--primary);
-}
-
 /* ---------- Página ---------- */
 .page {
   flex: 1;
@@ -585,10 +502,6 @@ a:focus-visible {
     display: grid;
   }
 
-  .nav {
-    display: none;
-  }
-
   .footer__grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -600,7 +513,7 @@ a:focus-visible {
   }
 
   .page {
-    padding-top: 32px;
+    padding-top: 105px;
   }
 
   .job {

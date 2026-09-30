@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Header } from '../../components/header/header';
 
 type TabId = 'search' | 'chat' | 'requests' | 'reviews' | 'profile';
 type DateFilter = 'any' | 'today' | 'week' | 'month';
@@ -55,7 +56,7 @@ function daysFromToday(days: number): string {
 
 @Component({
   selector: 'app-vacancy',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, Header],
   templateUrl: './vacancy.html',
   styleUrl: './vacancy.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,13 +71,6 @@ export class Vacancy {
 
   protected readonly year = new Date().getFullYear();
   protected readonly stars = [1, 2, 3, 4, 5];
-
-  protected readonly navLinks = [
-    { label: 'Início', path: '/home' },
-    { label: 'Vagas', path: '/vagas' },
-    { label: 'Para empresas', path: '/empresas' },
-    { label: 'Contato', path: '/contato' },
-  ];
 
   protected readonly tabs: Tab[] = [
     { id: 'search', label: 'Buscar vagas' },
