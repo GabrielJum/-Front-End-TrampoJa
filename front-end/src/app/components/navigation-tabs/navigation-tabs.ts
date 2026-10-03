@@ -20,7 +20,7 @@ export class NavigationTabs {
   protected readonly tabs: Tab[] = [
     { label: 'Buscar vagas', path: '/vagas' },
     { label: 'Chat', path: '/chat' },
-    { label: 'Solicitações', badge: 3 },
+    { label: 'Solicitações', path: '/solicitacoes', badge: 3 },
     { label: 'Avaliações', badge: 7 },
     { label: 'Seus dados' },
   ];

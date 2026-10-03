@@ -26,5 +26,10 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/chat/chat').then(m => m.Chat)
     },
+    {
+        path: 'solicitacoes',
+        loadComponent: () =>
+            import('./pages/solicitation/solicitation').then(m => m.Solicitation)
+    },
 
 ];
