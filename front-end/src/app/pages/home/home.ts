@@ -19,7 +19,7 @@ interface NavLink {
 
 @Component({
   selector: 'app-home',
-  imports: [DecimalPipe, Header, RouterLink, RouterLinkActive],
+  imports: [DecimalPipe, Header, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
