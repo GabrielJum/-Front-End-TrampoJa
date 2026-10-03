@@ -17,11 +17,6 @@ export const routes: Routes = [
             import('./pages/vacancy/vacancy').then(m => m.Vacancy)
     },
     {
-        path: 'vagas/:id',
-        loadComponent: () =>
-            import('./pages/vacancy/vacancy-detail/vacancy-detail').then(m => m.VacancyDetail)
-    },
-    {
         path: 'chat', 
         loadComponent: () =>
             import('./pages/chat/chat').then(m => m.Chat)

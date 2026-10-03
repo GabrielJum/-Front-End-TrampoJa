@@ -174,6 +174,7 @@ export class Vacancy {
   private readonly applied = signal<Filters>(EMPTY_FILTERS);
 
   protected readonly visibleCount = signal(PAGE_SIZE);
+  protected readonly expandedId = signal<number | null>(null);
   protected readonly appliedJobIds = signal<ReadonlySet<number>>(new Set());
   protected readonly filtersOpen = signal(false);
 
@@ -247,6 +248,10 @@ export class Vacancy {
 
   protected toggleFilters(): void {
     this.filtersOpen.update((open) => !open);
+  }
+
+  protected toggleDetails(id: number): void {
+    this.expandedId.update((current) => (current === id ? null : id));
   }
 
   protected apply(id: number): void {

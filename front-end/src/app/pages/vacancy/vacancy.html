@@ -189,18 +189,22 @@
                 </li>
               </ul>
 
+              @if (expandedId() === job.id) {
+                <p class="job__desc">{{ job.description }}</p>
+              }
+
               <div class="job__footer">
                 <p class="job__price">{{ job.priceLabel }} <small>/ diária</small></p>
 
                 <div class="job__actions">
-                  <a routerLink="/vagas/1" class="link-btn">
-                    <button
-                      type="button"
-                      class="btn btn--ghost"                      
-                    >
-                      Ver mais sobre
-                    </button>
-                  </a>
+                  <button
+                    type="button"
+                    class="btn btn--ghost"
+                    [attr.aria-expanded]="expandedId() === job.id"
+                    (click)="toggleDetails(job.id)"
+                  >
+                    {{ expandedId() === job.id ? 'Ver menos' : 'Ver mais sobre' }}
+                  </button>
 
                   @if (appliedJobIds().has(job.id)) {
                     <button type="button" class="btn btn--success" disabled>
