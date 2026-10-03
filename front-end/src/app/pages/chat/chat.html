@@ -1,0 +1,159 @@
+<app-header />
+
+<main class="container page">
+  <!-- ============ TÍTULO + ABAS ============ -->
+  <div class="page__head">
+    <span class="eyebrow">Área do profissional</span>
+    <h1 class="page__title">Chat</h1>
+  </div>
+
+  <app-navigation-tabs />
+
+  <!-- ============ CHAT ============ -->
+  <section class="chat" [class.has-active]="active()">
+    <!-- Lista de conversas -->
+    <aside class="inbox" aria-label="Conversas">
+      <div class="inbox__head">
+        <h2>Mensagens</h2>
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input type="search" placeholder="Buscar empresa" aria-label="Buscar conversa"
+            [ngModel]="search()" (ngModelChange)="search.set($event)" />
+        </label>
+      </div>
+
+      <ul class="inbox__list">
+        @for (conv of filteredConversations(); track conv.id) {
+          <li>
+            <button type="button" class="conv" [class.is-active]="activeId() === conv.id"
+              [attr.aria-current]="activeId() === conv.id" (click)="open(conv.id)">
+              <span class="avatar" [class.is-online]="conv.online" aria-hidden="true">{{ conv.initials }}</span>
+              <span class="conv__body">
+                <span class="conv__top">
+                  <strong>{{ conv.company }}</strong>
+                  <time>{{ conv.lastTime }}</time>
+                </span>
+                <span class="conv__bottom">
+                  <span class="conv__preview">{{ conv.preview }}</span>
+                  @if (conv.unread) {
+                    <span class="unread" [attr.aria-label]="conv.unread + ' não lidas'">{{ conv.unread }}</span>
+                  }
+                </span>
+              </span>
+            </button>
+          </li>
+        } @empty {
+          <li class="inbox__empty">Nenhuma conversa encontrada.</li>
+        }
+      </ul>
+
+      @if (hasMore()) {
+        <button type="button" class="btn btn--outline inbox__more" (click)="loadMore()">
+          Ver mais
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+        </button>
+      }
+    </aside>
+
+    <!-- Conversa aberta -->
+    <div class="room">
+      @if (active(); as conv) {
+        <header class="room__head">
+          <button type="button" class="icon-btn room__back" aria-label="Voltar para conversas" (click)="back()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+          </button>
+          <span class="avatar" [class.is-online]="conv.online" aria-hidden="true">{{ conv.initials }}</span>
+          <div class="room__info">
+            <h2>{{ conv.company }}</h2>
+            <p>
+              <span class="status" [class.is-online]="conv.online"></span>
+              {{ conv.online ? 'Online' : 'Offline' }} · Vaga de {{ conv.role }}
+            </p>
+          </div>
+        </header>
+
+        <div class="thread" #thread role="log" aria-live="polite">
+          @for (msg of conv.messages; track msg.id) {
+            <div class="msg" [class.msg--me]="msg.fromMe">
+              <p class="msg__bubble">{{ msg.text }}</p>
+              <time class="msg__time">
+                {{ msg.time }}
+                @if (msg.fromMe) {
+                  <svg viewBox="0 0 24 24" aria-label="Enviada"><path d="M18 7 9.5 15.5 6 12M22 7l-8.5 8.5" /></svg>
+                }
+              </time>
+            </div>
+          }
+        </div>
+
+        <form class="composer" (ngSubmit)="send()">
+          <textarea name="draft" rows="1" placeholder="Escreva uma mensagem…" aria-label="Mensagem"
+            [ngModel]="draft()" (ngModelChange)="draft.set($event)" (keydown)="onKeydown($event)"></textarea>
+          <button type="submit" class="btn btn--accent composer__send" [disabled]="!draft().trim()">
+            <span class="composer__label">Enviar</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z" />
+            </svg>
+          </button>
+        </form>
+      } @else {
+        <div class="room__empty">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" />
+          </svg>
+          <h3>Selecione uma conversa</h3>
+          <p>Escolha uma empresa ao lado para ver e responder as mensagens.</p>
+        </div>
+      }
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <p class="footer__brand">Trampo <strong>Já!</strong></p>
+      <p>Conectamos pessoas a oportunidades de trabalho de forma rápida, simples e confiável.</p>
+    </div>
+    <div>
+      <h3>Navegação</h3>
+      <a routerLink="/home">Início</a>
+      <a routerLink="/vagas">Vagas</a>
+      <a routerLink="/empresas">Para empresas</a>
+      <a routerLink="/como-funciona">Como funciona</a>
+    </div>
+    <div>
+      <h3>Ajuda</h3>
+      <a routerLink="/ajuda">Central de ajuda</a>
+      <a routerLink="/faq">Dúvidas frequentes</a>
+      <a routerLink="/termos">Termos de uso</a>
+      <a routerLink="/privacidade">Política de privacidade</a>
+    </div>
+    <div>
+      <h3>Contato</h3>
+      <a href="mailto:contato@trampoja.com">contato&#64;trampoja.com</a>
+      <a href="tel:+5511942343131">(11) 94234-3131</a>
+      <div class="socials">
+        <a href="https://wa.me/5511942343131" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" /></svg>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+        </a>
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <p class="container footer__bottom">© {{ year }} Trampo Já! Todos os direitos reservados.</p>
+</footer>
