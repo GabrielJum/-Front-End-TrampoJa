@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component,OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Header } from '../../components/header/header';
 
 interface Usuario {
   name: string;
@@ -11,16 +10,14 @@ interface Usuario {
 }
 
 @Component({
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, Header],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule],
   selector: 'app-auth',
   styleUrl: './auth.css',
   templateUrl: './auth.html',
 })
-
 export class Auth implements OnInit {
   form!: FormGroup;
   isLoginMode = true;
-  protected readonly year = new Date().getFullYear();
 
   constructor(
     private fb: FormBuilder,
