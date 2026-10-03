@@ -11,12 +11,23 @@ html {
 
 body {
   margin: 0;
+<<<<<<< HEAD
   background: #f7f8fb;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+=======
+  padding-top: 72px;
+  background: #f7f8fb;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+>>>>>>> 1d1cef8b33490fe55f93189f7e4d770dff136668
 }
 
 img {
   max-width: 100%;
+<<<<<<< HEAD
+=======
+  display: block;
+>>>>>>> 1d1cef8b33490fe55f93189f7e4d770dff136668
 }
 
 
@@ -32,6 +43,18 @@ img {
   position: absolute;
   width: 0;
   height: 0;
+<<<<<<< HEAD
+=======
+  overflow: hidden;
+}
+
+.eyebrow{
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+>>>>>>> 1d1cef8b33490fe55f93189f7e4d770dff136668
 }
 
 
@@ -44,8 +67,14 @@ img {
   border: 1.5px solid transparent;
   border-radius: 999px;
   font: inherit;
+<<<<<<< HEAD
   font-size: 0.92rem;
   font-weight: 600;
+=======
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+>>>>>>> 1d1cef8b33490fe55f93189f7e4d770dff136668
   cursor: pointer;
   transition: transform 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
@@ -56,8 +85,13 @@ img {
 
 .btn:focus-visible,
 a:focus-visible {
+<<<<<<< HEAD
   outline: 3px solid rgb(232 116 37 / 0.4);
   outline-offset: 2px;
+=======
+  outline: 3px solid rgb(232 116 37 / 0.45);
+  outline-offset: 3px;
+>>>>>>> 1d1cef8b33490fe55f93189f7e4d770dff136668
 }
 
 .btn--primary {
