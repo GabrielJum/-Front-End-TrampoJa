@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { Header } from '../../../components/header/header';
 import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
+import { Footer } from '../../../components/footer/footer';
 
 interface JobDetail {
   id: number;
@@ -49,7 +50,7 @@ const JOBS: JobDetail[] = [
 
 @Component({
   selector: 'app-vacancy-detail',
-  imports: [RouterLink, Header, NavigationTabs],
+  imports: [RouterLink, Header, NavigationTabs, Footer],
   templateUrl: './vacancy-detail.html',
   styleUrl: './vacancy-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

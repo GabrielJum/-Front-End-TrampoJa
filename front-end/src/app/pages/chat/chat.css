@@ -393,79 +393,6 @@ textarea:focus-visible {
   color: var(--primary);
 }
 
-/* ---------- Footer ---------- */
-.footer {
-  background: var(--primary);
-  color: rgb(255 255 255 / 0.7);
-  font-size: 0.9rem;
-}
-
-.footer__grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
-  gap: 40px;
-  padding-block: 56px 40px;
-}
-
-.footer__grid > div {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-}
-
-.footer__brand {
-  color: #fff;
-}
-
-.footer p {
-  max-width: 300px;
-  line-height: 1.6;
-}
-
-.footer h3 {
-  margin-bottom: 6px;
-  font-size: 0.95rem;
-  color: #fff;
-}
-
-.footer a {
-  width: fit-content;
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer__grid a:hover {
-  color: var(--accent);
-}
-
-.socials {
-  display: flex;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.socials a {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: rgb(255 255 255 / 0.08);
-  color: #fff;
-}
-
-.socials a:hover {
-  background: var(--accent);
-  color: #fff;
-}
-
-.footer__bottom {
-  padding-block: 20px;
-  border-top: 1px solid rgb(255 255 255 / 0.1);
-  font-size: 0.82rem;
-  color: rgb(255 255 255 / 0.5);
-}
 
 /* ---------- Responsivo ---------- */
 @media (max-width: 900px) {
@@ -490,10 +417,6 @@ textarea:focus-visible {
 
   .msg {
     max-width: 85%;
-  }
-
-  .footer__grid {
-    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -526,7 +449,4 @@ textarea:focus-visible {
     padding: 0;
   }
 
-  .footer__grid {
-    grid-template-columns: 1fr;
-  }
 }

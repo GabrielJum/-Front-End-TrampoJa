@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Header } from '../../components/header/header';
 import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
+import { Footer } from '../../components/footer/footer';
 
 
 interface Message {
@@ -37,7 +38,7 @@ function now(): string {
 
 @Component({
   selector: 'app-chat',
-  imports: [FormsModule, Header, NavigationTabs],
+  imports: [FormsModule, Header, NavigationTabs, Footer],
   templateUrl: './chat.html',
   styleUrl: './chat.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

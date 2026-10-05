@@ -322,108 +322,6 @@ svg {
   color: var(--muted);
 }
 
-/* ---------- Footer ---------- */
-.footer {
-  background: var(--primary);
-  color: rgb(255 255 255 / 0.72);
-  font-size: 0.92rem;
-}
-
-.footer__grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
-  gap: 40px;
-  padding-block: 64px 48px;
-}
-
-.brand--light {
-  color: #fff;
-}
-
-.brand--light .brand__mark {
-  background: rgb(255 255 255 / 0.1);
-  box-shadow: none;
-}
-
-.footer__about p {
-  max-width: 300px;
-  margin: 18px 0 0;
-  line-height: 1.65;
-}
-
-.footer__title {
-  margin: 0 0 18px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-.footer__list {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.footer__list a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.footer__list a:hover {
-  color: var(--accent);
-}
-
-.footer__list svg {
-  width: 16px;
-  height: 16px;
-}
-
-.socials {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.socials a {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgb(255 255 255 / 0.08);
-  color: #fff;
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.socials a:hover {
-  background: var(--accent);
-  transform: translateY(-3px);
-}
-
-.socials svg {
-  width: 18px;
-  height: 18px;
-}
-
-.footer__bottom {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px;
-  padding-block: 22px;
-  border-top: 1px solid rgb(255 255 255 / 0.1);
-  font-size: 0.85rem;
-  color: rgb(255 255 255 / 0.55);
-}
-
 /* ---------- Responsivo ---------- */
 @media (max-width: 1080px) {
   .categories__grid {
@@ -449,9 +347,6 @@ svg {
     right: 12px;
   }
 
-  .footer__grid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (max-width: 768px) {
@@ -522,14 +417,6 @@ svg {
     gap: 12px;
   }
 
-  .float-card {
-    display: none;
-  }
-
-  .footer__grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

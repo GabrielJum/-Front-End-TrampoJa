@@ -3,6 +3,7 @@ import { Component,OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Header } from '../../components/header/header';
+import { Footer } from '../../components/footer/footer';
 
 interface Usuario {
   name: string;
@@ -11,7 +12,7 @@ interface Usuario {
 }
 
 @Component({
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, Header],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, Header, Footer],
   selector: 'app-auth',
   styleUrl: './auth.css',
   templateUrl: './auth.html',

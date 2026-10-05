@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { RouterLink } from '@angular/router';
 import { Header } from '../../components/header/header';
 import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
+import { Footer } from '../../components/footer/footer';
 
 type Status = 'confirmed' | 'review' | 'canceled';
 type StatusFilter = 'all' | Status;
@@ -116,7 +117,7 @@ const REQUESTS: Request[] = [
 
 @Component({
   selector: 'app-solicitation',
-  imports: [RouterLink, Header, NavigationTabs],
+  imports: [RouterLink, Header, NavigationTabs, Footer],
   templateUrl: './solicitation.html',
   styleUrl: './solicitation.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
