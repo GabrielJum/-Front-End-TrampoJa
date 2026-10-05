@@ -1,9 +1,11 @@
 <nav class="tabs" aria-label="Seções da conta">
     @for (tab of tabs; track tab.label) {
         @if (tab.path) {
-            <a class="tab" [routerLink]="tab.path"  routerLinkActive="is-active"
-                [attr.aria-current]="tab.path === '/chat' ? 'page' : null">
+            <a class="tab" [routerLink]="tab.path" routerLinkActive="is-active" ariaCurrentWhenActive="page">
                 {{ tab.label }}
+                @if (tab.badge) {
+                <span class="tab__badge" [attr.aria-label]="tab.badge + ' novas'">{{ tab.badge }}</span>
+                }
             </a>
         } @else {
             <button type="button" class="tab" disabled title="Em breve">
