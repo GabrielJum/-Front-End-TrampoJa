@@ -31,5 +31,10 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/solicitation/solicitation').then(m => m.Solicitation)
     },
+    {
+        path: 'perfil',
+        loadComponent: () =>
+            import('./pages/profile/profile').then(m => m.Profile)
+    },
 
 ];

@@ -22,7 +22,6 @@ export class NavigationTabs {
     { label: 'Chat', path: '/chat' },
     { label: 'Solicitações', path: '/solicitacoes', badge: 3 },
     { label: 'Avaliações', badge: 7 },
-    { label: 'Seus dados' },
   ];
 
 }
