@@ -24,7 +24,7 @@ export class Header implements OnInit {
   constructor(private router: Router) {}
 
   protected readonly navLinks: NavLink[] = [
-    { label: 'Início', path: '/home' },
+    { label: 'Início', path: '/' },
     { label: 'Vagas', path: '/vagas' },
     { label: 'Para empresas', path: '/empresas' },
     { label: 'Contato', path: '/contato' },

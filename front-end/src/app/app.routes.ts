@@ -2,12 +2,12 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
-        path: '',
+        path: 'auth',
         loadComponent: () =>
             import('./pages/auth/auth').then(m => m.Auth)
     },
     {
-        path: 'home',
+        path: '',
         loadComponent: () =>
             import('./pages/home/home').then(m => m.Home)
     },
