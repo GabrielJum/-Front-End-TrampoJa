@@ -1,37 +1,277 @@
 <app-header />
 
-<body>
-    <div class="auth-container">
-        <h2>{{isLoginMode ? 'Login': 'Cadastro'}}</h2>
+<main class="container page">
+  <div class="layout">
+    <!-- ============ VITRINE ============ -->
+    <section class="showcase" aria-labelledby="showcase-title">
+      <h1 id="showcase-title" class="showcase__title">
+        {{ mode() === 'login' ? 'Bem-vindo de volta' : 'Crie sua conta' }}
+       
+      </h1>
+      <p class="showcase__text">
+        {{
+            mode() === 'login'
+              ? 'Entre para ver vagas, conversar com empresas e acompanhar suas solicitações.'
+              : 'Leva menos de um minuto. É grátis para profissionais.'
+          }}
+      </p>
 
-        <form [formGroup]="form" (ngSubmit)="onsubmit()">
+      <div class="showcase__media">
+        <img
+          src="images/img_hero.png"
+          alt="Profissionais de segurança, eventos, entregas, obras, food truck e restaurante sorrindo lado a lado"
+          width="728"
+          height="488"
+        />
+      </div>
+    </section>
 
-            <div *ngIf="!isLoginMode">
-                <label for="name">Nome :</label>
-                <input id="name" formControlName="name">
+    <!-- ============ CARTÃO DE ACESSO ============ -->
+    <section class="card" aria-labelledby="auth-title">
+      <div class="segmented" role="tablist" aria-label="Tipo de acesso">
+        <span class="segmented__thumb" [class.is-right]="mode() === 'register'" aria-hidden="true"></span>
+        <button
+          type="button"
+          role="tab"
+          class="segmented__btn"
+          [class.is-active]="mode() === 'login'"
+          [attr.aria-selected]="mode() === 'login'"
+          (click)="setMode('login')"
+        >
+          Entrar
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="segmented__btn"
+          [class.is-active]="mode() === 'register'"
+          [attr.aria-selected]="mode() === 'register'"
+          (click)="setMode('register')"
+        >
+          Criar conta
+        </button>
+      </div>
+
+
+
+      @if (feedback(); as fb) {
+        <div class="alert" [class]="'alert--' + fb.type" role="status">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            @switch (fb.type) {
+              @case ('success') { <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4 12 14.01l-3-3" /> }
+              @case ('error') { <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /> }
+              @default { <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /> }
+            }
+          </svg>
+          <span>{{ fb.message }}</span>
+        </div>
+      }
+
+      @if (mode() === 'login') {
+        <!-- ---------- LOGIN ---------- -->
+        <form class="form" [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+          <div class="field">
+            <label class="field__label" for="login-email">E-mail</label>
+            <div class="input" [class.is-invalid]="showError('login', 'email')">
+              <fa-icon [icon]="faEnvelope" size="1x"></fa-icon>
+              <input
+                id="login-email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                placeholder="voce@email.com"
+                [attr.aria-invalid]="showError('login', 'email')"
+              />
             </div>
+            @if (showError('login', 'email')) {
+              <p class="field__error">Informe um e-mail válido.</p>
+            }
+          </div>
 
-            <div>
-                <label for="email">Email :</label>
-                <input id="email" type="email" formControlName="email">
+          <div class="field">
+            <div class="field__row">
+              <label class="field__label" for="login-password">Senha</label>
+              <button type="button" class="link" (click)="forgotPassword()">Esqueceu sua senha?</button>
             </div>
-
-            <div>
-                <label for="password">Senha :</label>
-                <input id="password" type="password" formControlName="password"
-                    [placeholder]="isLoginMode ? '' : 'Informe pelo menos 6 digitos'">
+            <div class="input" [class.is-invalid]="showError('login', 'password')">
+              <fa-icon [icon]="faLock" size="1x"></fa-icon>
+              <input
+                id="login-password"
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                autocomplete="current-password"
+                placeholder="Digite sua senha"
+                [attr.aria-invalid]="showError('login', 'password')"
+              />
+              <ng-container *ngTemplateOutlet="eyeToggle" />
             </div>
+            @if (showError('login', 'password')) {
+              <p class="field__error">Informe sua senha.</p>
+            }
+          </div>
 
-            <button type="submit">{{isLoginMode ? 'Entrar' : 'Cadastrar'}}</button>
+          <label class="check">
+            <input type="checkbox" formControlName="remember" />
+            <span class="check__box" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+            </span>
+            Manter conectado
+          </label>
 
-
+          <button type="submit" class="btn btn--accent btn--lg" [disabled]="loading()">
+            @if (loading()) {
+              <span class="spinner" aria-hidden="true"></span> Entrando...
+            } @else {
+              Entrar
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+            }
+          </button>
         </form>
+      } @else {
+        <!-- ---------- CADASTRO ---------- -->
+        <form class="form" [formGroup]="registerForm" (ngSubmit)="register()" novalidate>
+          <div class="field">
+            <label class="field__label" for="reg-name">Nome completo</label>
+            <div class="input" [class.is-invalid]="showError('register', 'name')">
+              <fa-icon [icon]="faUser" size="1x"></fa-icon>
+              <input
+                id="reg-name"
+                type="text"
+                formControlName="name"
+                autocomplete="name"
+                placeholder="Como você se chama?"
+                [attr.aria-invalid]="showError('register', 'name')"
+              />
+            </div>
+            @if (showError('register', 'name')) {
+              <p class="field__error">Informe seu nome (mínimo 3 caracteres).</p>
+            }
+          </div>
 
-        <p>
-            {{isLoginMode ? 'Não tem uma conta?' : 'Já tem uma conta?'}}
-            <button (click)="toggleMode()">{{isLoginMode ? 'Criar conta' : 'Fazer login'}} </button>
-        </p>
-    </div>
-</body>
+          <div class="field">
+            <label class="field__label" for="reg-email">E-mail</label>
+            <div class="input" [class.is-invalid]="showError('register', 'email')">
+              <fa-icon [icon]="faEnvelope" size="1x"></fa-icon>
+              <input
+                id="reg-email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                placeholder="voce@email.com"
+                [attr.aria-invalid]="showError('register', 'email')"
+              />
+            </div>
+            @if (showError('register', 'email')) {
+              <p class="field__error">Informe um e-mail válido.</p>
+            }
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label class="field__label" for="reg-password">Senha</label>
+              <div class="input" [class.is-invalid]="showError('register', 'password')">
+                <fa-icon [icon]="faLock" size="1x"></fa-icon>
+                <input
+                  id="reg-password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  autocomplete="new-password"
+                  [placeholder]="'Mín. ' + minPassword + ' caracteres'"
+                  [attr.aria-invalid]="showError('register', 'password')"
+                />
+                <ng-container *ngTemplateOutlet="eyeToggle" />
+              </div>
+              @if (showError('register', 'password')) {
+                <p class="field__error">Use no mínimo {{ minPassword }} caracteres.</p>
+              }
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="reg-confirm">Confirmar senha</label>
+              <div class="input" [class.is-invalid]="showError('register', 'confirmPassword') || mismatch">
+               <fa-icon [icon]="faShieldHalved" size="1x"></fa-icon>
+                <input
+                  id="reg-confirm"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  autocomplete="new-password"
+                  placeholder="Repita a senha"
+                  [attr.aria-invalid]="showError('register', 'confirmPassword') || mismatch"
+                />
+              </div>
+              @if (showError('register', 'confirmPassword')) {
+                <p class="field__error">Confirme sua senha.</p>
+              } @else if (mismatch) {
+                <p class="field__error">As senhas não coincidem.</p>
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="check">
+              <input type="checkbox" formControlName="terms" />
+              <span class="check__box" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+              </span>
+              <span>Li e aceito os <a href="#" class="link">Termos de uso</a> e a <a href="#" class="link">Política de privacidade</a>.</span>
+            </label>
+            @if (showError('register', 'terms')) {
+              <p class="field__error">Você precisa aceitar os termos para continuar.</p>
+            }
+          </div>
+
+          <button type="submit" class="btn btn--accent btn--lg" [disabled]="loading()">
+            @if (loading()) {
+              <span class="spinner" aria-hidden="true"></span> Criando conta...
+            } @else {
+              Criar conta
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+            }
+          </button>
+        </form>
+      }
+
+      <!-- ---------- OUTRAS FORMAS ---------- -->
+      <div class="divider"><span>ou continue com</span></div>
+      
+      <div class="social">
+        <button type="button" class="social__btn" (click)="socialLogin('Google')">
+          <fa-icon [icon]="faGoogle" size="1x"></fa-icon>
+          Google
+        </button>
+        <button type="button" class="social__btn" (click)="socialLogin('Facebook')">
+          <fa-icon [icon]="faFacebook" size="1x"></fa-icon>
+          Facebook
+        </button>
+      </div>
+
+      <p class="switch">
+        @if (mode() === 'login') {
+          Ainda não tem conta?
+          <button type="button" class="link link--strong" (click)="setMode('register')">Criar conta grátis</button>
+        } @else {
+          Já tem uma conta?
+          <button type="button" class="link link--strong" (click)="setMode('login')">Fazer login</button>
+        }
+      </p>
+    </section>
+  </div>
+</main>
 
 <app-footer />
+
+<ng-template #eyeToggle>
+  <button
+    type="button"
+    class="input__toggle"
+    [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+    [attr.aria-pressed]="showPassword()"
+    (click)="togglePassword()"
+  >
+      @if (showPassword()) {
+        <fa-icon [icon]="faEyeSlash" size="1x"></fa-icon>
+      } @else {
+        <fa-icon [icon]="faEye" size="1x"></fa-icon>
+      }
+  </button>
+</ng-template>
