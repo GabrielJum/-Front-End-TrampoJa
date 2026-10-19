@@ -1,0 +1,224 @@
+<app-header />
+
+<main class="container page">
+  <!-- ============ TÍTULO + ABAS ============ -->
+  <div class="page__head">
+    <span class="eyebrow">Área do profissional</span>
+    <h1 class="page__title">Avaliações</h1>
+    <p class="page__subtitle">Conte como foi trabalhar em cada empresa e ajude outros profissionais.</p>
+  </div>
+
+  <app-navigation-tabs />
+
+  <!-- ============ FILTRO ============ -->
+  <div class="chips" role="group" aria-label="Filtrar avaliações">
+    @for (f of filters(); track f.id) {
+      <button
+        type="button"
+        class="chip"
+        [class.is-active]="filter() === f.id"
+        [attr.aria-pressed]="filter() === f.id"
+        (click)="setFilter(f.id)"
+      >
+        {{ f.label }}
+        <span class="chip__count">{{ f.count }}</span>
+      </button>
+    }
+  </div>
+
+  @if (selected(); as review) {
+    <div class="layout">
+      <!-- ============ LISTA ============ -->
+      <div class="sidebar">
+        <ul class="list" aria-label="Empresas para avaliar">
+          @for (item of visibleReviews(); track item.id) {
+            <li>
+              <button
+                type="button"
+                class="item"
+                [class.is-active]="review.id === item.id"
+                [attr.aria-current]="review.id === item.id"
+                (click)="select(item.id)"
+              >
+                <span class="item__avatar" aria-hidden="true">{{ item.initials }}</span>
+                <span class="item__body">
+                  <strong>{{ item.company }}</strong>
+                  <span class="item__role">{{ item.role }}</span>
+                </span>
+                @if (item.scores) {
+                  <span class="status status--done">
+                    <fa-icon [icon]="icons.done" />
+                    Feita
+                  </span>
+                } @else {
+                  <span class="status status--pending">
+                    <fa-icon [icon]="icons.pending" />
+                    Pendente
+                  </span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+
+        @if (hasMore()) {
+          <button type="button" class="btn btn--outline load-more" (click)="loadMore()">
+            Ver mais
+            <fa-icon [icon]="icons.chevron" />
+          </button>
+        }
+      </div>
+
+      <!-- ============ AVALIAÇÃO ============ -->
+      <article class="card" aria-labelledby="review-title">
+        <header class="job">
+          <div class="job__logo">
+            @if (review.logoUrl) {
+              <img [src]="review.logoUrl" [alt]="'Logo ' + review.company" />
+            } @else {
+              <span aria-hidden="true">{{ review.initials }}</span>
+            }
+          </div>
+
+          <div class="job__info">
+            <h2 id="review-title" class="job__role">{{ review.role }}</h2>
+            <p class="job__company">
+              <strong>{{ review.company }}</strong>
+              <span class="dot" aria-hidden="true"></span>
+              {{ review.companyType }}
+            </p>
+            <ul class="job__meta">
+              <li class="capitalize">
+                <fa-icon [icon]="icons.calendar" />
+                {{ review.dateLabel }}
+              </li>
+              <li>
+                <fa-icon [icon]="icons.clock" />
+                {{ review.period }} · {{ review.start }} – {{ review.end }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Nota geral -->
+          @if (review.average !== null) {
+            <div class="score score--done">
+              <span class="score__value">{{ review.average.toFixed(1) }}</span>
+              <span class="score__label">
+                <fa-icon [icon]="icons.done" />
+                Avaliação feita
+              </span>
+            </div>
+          } @else {
+            <div class="score">
+              <span class="score__value">{{ draftAverage() ? draftAverage().toFixed(1) : '–' }}</span>
+              <span class="score__label">
+                <fa-icon [icon]="icons.pending" />
+                Não realizada
+              </span>
+            </div>
+          }
+        </header>
+
+        @if (review.scores; as scores) {
+          <!-- ---------- Avaliação enviada (somente leitura) ---------- -->
+          <ul class="criteria">
+            @for (c of criteria; track c.id) {
+              <li class="criterion">
+                <span class="criterion__icon"><fa-icon [icon]="c.icon" /></span>
+                <span class="criterion__text">
+                  <strong>{{ c.label }}</strong>
+                  <small>{{ c.hint }}</small>
+                </span>
+                <span class="stars" [attr.aria-label]="c.label + ': ' + scores[c.id] + ' de 5'">
+                  @for (s of stars; track s) {
+                    <fa-icon class="star" [class.is-full]="s <= scores[c.id]" [icon]="icons.star" />
+                  }
+                </span>
+                <span class="criterion__label">{{ scoreLabels[scores[c.id]] }}</span>
+              </li>
+            }
+          </ul>
+
+          @if (review.comment) {
+            <blockquote class="quote">
+              <fa-icon [icon]="icons.quote" />
+              <p>{{ review.comment }}</p>
+            </blockquote>
+          }
+        } @else {
+          <!-- ---------- Formulário de avaliação ---------- -->
+          <form class="form" (ngSubmit)="submit()">
+            <ul class="criteria">
+              @for (c of criteria; track c.id) {
+                <li class="criterion">
+                  <span class="criterion__icon"><fa-icon [icon]="c.icon" /></span>
+                  <span class="criterion__text">
+                    <strong [id]="'label-' + c.id">{{ c.label }}</strong>
+                    <small>{{ c.hint }}</small>
+                  </span>
+                  <span
+                    class="stars stars--input"
+                    role="radiogroup"
+                    [attr.aria-labelledby]="'label-' + c.id"
+                    (mouseleave)="hovered.set(null)"
+                  >
+                    @for (s of stars; track s) {
+                      <button
+                        type="button"
+                        class="star-btn"
+                        role="radio"
+                        [attr.aria-checked]="draft()[c.id] === s"
+                        [attr.aria-label]="s + ' de 5 – ' + scoreLabels[s]"
+                        (mouseenter)="hovered.set({ id: c.id, value: s })"
+                        (click)="rate(c.id, s)"
+                      >
+                        <fa-icon class="star" [class.is-full]="s <= displayScore(c.id)" [icon]="icons.star" />
+                      </button>
+                    }
+                  </span>
+                  <span class="criterion__label">{{ scoreLabels[displayScore(c.id)] || 'Toque para avaliar' }}</span>
+                </li>
+              }
+            </ul>
+
+            <label class="field">
+              <span class="field__label">Comentário <small>(opcional)</small></span>
+              <textarea
+                name="comment"
+                rows="5"
+                [maxlength]="maxComment"
+                placeholder="Escreva aqui sua avaliação: se a localização foi boa, se a empresa foi comprometida e pagou o combinado, se o ambiente de trabalho era agradável e se a empresa não forçou acúmulo de funções."
+                [ngModel]="comment()"
+                (ngModelChange)="comment.set($event)"
+              ></textarea>
+              <span class="field__counter">{{ comment().length }}/{{ maxComment }}</span>
+            </label>
+
+            <footer class="form__footer">
+              <p class="form__hint">
+                @if (canSubmit()) {
+                  Tudo pronto! Sua avaliação será pública e anônima.
+                } @else {
+                  Dê uma nota para os 3 critérios para enviar.
+                }
+              </p>
+              <button type="submit" class="btn btn--accent" [disabled]="!canSubmit()">
+                <fa-icon [icon]="icons.send" />
+                Enviar avaliação
+              </button>
+            </footer>
+          </form>
+        }
+      </article>
+    </div>
+  } @else {
+    <div class="empty">
+      <span class="empty__icon"><fa-icon [icon]="icons.empty" /></span>
+      <h3>Nada por aqui</h3>
+      <p>Não há avaliações nesta categoria no momento.</p>
+      <button type="button" class="btn btn--outline" (click)="setFilter('all')">Ver todas</button>
+    </div>
+  }
+</main>
+
+<app-footer />
