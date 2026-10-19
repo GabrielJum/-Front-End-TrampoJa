@@ -41,5 +41,10 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./pages/contact/contact').then(m => m.Contact)
     },
+    {
+        path: 'avaliacoes',
+        loadComponent: () =>
+            import('./review/review').then(m => m.Review)
+    },
 
 ];

@@ -21,7 +21,7 @@ export class NavigationTabs {
     { label: 'Buscar vagas', path: '/vagas' },
     { label: 'Chat', path: '/chat' },
     { label: 'Solicitações', path: '/solicitacoes', badge: 3 },
-    { label: 'Avaliações', badge: 7 },
+    { label: 'Avaliações', path: '/avaliacoes', badge: 7 },
   ];
 
 }
