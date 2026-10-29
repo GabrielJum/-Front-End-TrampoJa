@@ -1,0 +1,186 @@
+<app-header />
+
+<main class="container page">
+  <div class="layout">
+    <!-- ============ VITRINE ============ -->
+    <section class="showcase" aria-labelledby="showcase-title">
+      <span class="pill">
+        <fa-icon [icon]="icons.building" />
+        Área da empresa
+      </span>
+
+      <h1 id="showcase-title" class="showcase__title">
+        Contrate freelancers <span class="highlight">sem burocracia.</span>
+      </h1>
+      <p class="showcase__text">
+        Cadastre sua empresa gratuitamente e publique sua primeira vaga em poucos minutos.
+      </p>
+
+      <div class="showcase__media">
+        <img
+          src="images/img_hero.png"
+          alt="Profissionais de segurança, eventos, entregas, obras, food truck e restaurante lado a lado"
+          width="728"
+          height="488"
+        />
+      </div>
+    </section>
+
+    <!-- ============ CARTÃO DE CADASTRO ============ -->
+    <section class="card" aria-labelledby="register-title">
+      <header class="card__head">
+        <span class="card__icon"><fa-icon [icon]="icons.building" /></span>
+        <h2 id="register-title" class="card__title">Cadastrar empresa</h2>
+        <p class="card__subtitle">Leva menos de um minuto. É grátis.</p>
+      </header>
+
+      @if (feedback(); as fb) {
+        <div class="alert" [class]="'alert--' + fb.type" role="status">
+          <fa-icon [icon]="icons[fb.type]" />
+          <span>{{ fb.message }}</span>
+        </div>
+      }
+
+      <form class="form" [formGroup]="form" (ngSubmit)="register()" novalidate>
+        <div class="field">
+          <label class="field__label" for="company-name">Nome da empresa</label>
+          <div class="input" [class.is-invalid]="showError('name')">
+            <fa-icon [icon]="icons.building" />
+            <input
+              id="company-name"
+              type="text"
+              formControlName="name"
+              autocomplete="organization"
+              placeholder="Razão social ou nome fantasia"
+              [attr.aria-invalid]="showError('name')"
+            />
+          </div>
+          @if (showError('name')) {
+            <p class="field__error">Informe o nome da empresa (mínimo 3 caracteres).</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="company-email">E-mail corporativo</label>
+          <div class="input" [class.is-invalid]="showError('email')">
+            <fa-icon [icon]="icons.envelope" />
+            <input
+              id="company-email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="contato@suaempresa.com.br"
+              [attr.aria-invalid]="showError('email')"
+            />
+          </div>
+          @if (showError('email')) {
+            <p class="field__error">Informe um e-mail válido.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="company-cnpj">CNPJ</label>
+          <div class="input" [class.is-invalid]="showError('cnpj')">
+            <fa-icon [icon]="icons.idCard" />
+            <input
+              id="company-cnpj"
+              type="text"
+              inputmode="numeric"
+              formControlName="cnpj"
+              maxlength="18"
+              placeholder="00.000.000/0000-00"
+              [attr.aria-invalid]="showError('cnpj')"
+              (input)="onCnpjInput($event)"
+            />
+          </div>
+          @if (showError('cnpj')) {
+            <p class="field__error">
+              {{ form.controls.cnpj.hasError('required') ? 'Informe o CNPJ.' : 'CNPJ inválido.' }}
+            </p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="company-password">Senha</label>
+          <div class="input" [class.is-invalid]="showError('password')">
+            <fa-icon [icon]="icons.lock" />
+            <input
+              id="company-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="new-password"
+              [placeholder]="'Mín. ' + minPassword + ' caracteres'"
+              [attr.aria-invalid]="showError('password')"
+            />
+            <button
+              type="button"
+              class="input__toggle"
+              [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+              [attr.aria-pressed]="showPassword()"
+              (click)="togglePassword()"
+            >
+              <fa-icon [icon]="showPassword() ? icons.eyeSlash : icons.eye" />
+            </button>
+          </div>
+          @if (showError('password')) {
+            <p class="field__error">Use no mínimo {{ minPassword }} caracteres.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="company-confirm">Confirmar senha</label>
+          <div class="input" [class.is-invalid]="showError('confirmPassword') || mismatch">
+            <fa-icon [icon]="icons.shield" />
+            <input
+              id="company-confirm"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              autocomplete="new-password"
+              placeholder="Repita a senha"
+              [attr.aria-invalid]="showError('confirmPassword') || mismatch"
+            />
+          </div>
+          @if (showError('confirmPassword')) {
+            <p class="field__error">Confirme sua senha.</p>
+          } @else if (mismatch) {
+            <p class="field__error">As senhas não coincidem.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="check">
+            <input type="checkbox" formControlName="terms" />
+            <span class="check__box" aria-hidden="true"><fa-icon [icon]="icons.check" /></span>
+            <span>
+              Li e aceito os <a href="#" class="link">Termos de uso</a> e a
+              <a href="#" class="link">Política de privacidade</a>.
+            </span>
+          </label>
+          @if (showError('terms')) {
+            <p class="field__error">Você precisa aceitar os termos para continuar.</p>
+          }
+        </div>
+
+        <button type="submit" class="btn btn--accent btn--lg" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner" aria-hidden="true"></span> Cadastrando...
+          } @else {
+            Cadastrar empresa
+            <fa-icon class="btn__arrow" [icon]="icons.arrow" />
+          }
+        </button>
+      </form>
+
+      <p class="switch">
+        Já tem conta empresarial?
+        <a routerLink="/empresas/login" class="link link--strong">Fazer login</a>
+      </p>
+
+      <p class="switch switch--muted">
+        É freelancer? <a routerLink="/auth" class="link">Acesse por aqui</a>
+      </p>
+    </section>
+  </div>
+</main>
+
+<app-footer />
