@@ -1,0 +1,191 @@
+<app-header />
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__content">
+        <span class="pill">
+          <fa-icon [icon]="icons.building" />
+          Para empresas
+        </span>
+
+        <h1 class="hero__title">
+          Contrate freelancers <span class="highlight">em poucas horas.</span>
+        </h1>
+
+        <p class="hero__subtitle">
+          Encontre profissionais verificados para cobrir turnos, eventos e demandas pontuais — com
+          contrato digital e pagamento seguro.
+        </p>
+
+        <div class="hero__actions">
+          <a routerLink="/auth" class="btn btn--accent btn--lg">
+            <fa-icon [icon]="icons.briefcase" />
+            Publicar vaga grátis
+          </a>
+          <a href="#como-funciona" class="btn btn--outline btn--lg">
+            Como funciona
+            <fa-icon [icon]="icons.arrow" />
+          </a>
+        </div>
+
+        <ul class="trust">
+          <li><fa-icon [icon]="icons.check" /> Sem mensalidade</li>
+          <li><fa-icon [icon]="icons.check" /> Profissionais avaliados</li>
+          <li><fa-icon [icon]="icons.check" /> Pague só pelo serviço</li>
+        </ul>
+      </div>
+
+      <div class="hero__media">
+        <div class="hero__image-wrap">
+          <img
+            src="images/img_hero.png"
+            alt="Freelancers de segurança, eventos, entregas, obras, food truck e restaurante"
+            class="hero__image"
+          />
+        </div>
+
+        <div class="float-card float-card--top">
+          <span class="float-card__icon float-card__icon--accent">
+            <fa-icon [icon]="icons.bolt" />
+          </span>
+          <div>
+            <strong>18 candidatos</strong>
+            <small>na sua vaga em 2h</small>
+          </div>
+        </div>
+
+        <div class="float-card float-card--bottom">
+          <span class="float-card__icon">
+            <fa-icon [icon]="icons.star" />
+          </span>
+          <div>
+            <strong>4,8 de 5</strong>
+            <small>Avaliação média</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NÚMEROS ============ -->
+  <section class="stats" aria-label="TrampoJá em números">
+    <div class="container">
+      <ul class="stats__grid">
+        @for (stat of stats(); track stat.label) {
+          <li class="stat">
+            <strong class="stat__value">{{ stat.value }}</strong>
+            <span class="stat__label">{{ stat.label }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ BENEFÍCIOS ============ -->
+  <section class="section" aria-labelledby="benefits-title">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <span class="eyebrow">Benefícios</span>
+        <h2 id="benefits-title" class="section-title">Por que contratar pelo TrampoJá?</h2>
+        <p class="section-subtitle">
+          Tudo o que sua empresa precisa para contratar com agilidade, segurança e controle.
+        </p>
+      </div>
+
+      <ul class="benefits__grid">
+        @for (benefit of benefits(); track benefit.title) {
+          <li class="benefit-card">
+            <span class="benefit-card__icon">
+              <fa-icon [icon]="benefit.icon" />
+            </span>
+            <h3 class="benefit-card__title">{{ benefit.title }}</h3>
+            <p class="benefit-card__text">{{ benefit.description }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ COMO FUNCIONA ============ -->
+  <section id="como-funciona" class="section section--alt" aria-labelledby="steps-title">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <span class="eyebrow">Como funciona</span>
+        <h2 id="steps-title" class="section-title">Do anúncio à contratação em 4 passos</h2>
+      </div>
+
+      <ol class="steps">
+        @for (step of steps(); track step.title; let i = $index) {
+          <li class="step">
+            <span class="step__number">{{ i + 1 }}</span>
+            <span class="step__icon">
+              <fa-icon [icon]="step.icon" />
+            </span>
+            <h3 class="step__title">{{ step.title }}</h3>
+            <p class="step__text">{{ step.description }}</p>
+          </li>
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ ÁREAS ============ -->
+  <section class="section" aria-labelledby="areas-title">
+    <div class="container areas">
+      <div class="areas__content">
+        <span class="eyebrow">Áreas</span>
+        <h2 id="areas-title" class="section-title">Profissionais para cada necessidade</h2>
+        <p class="section-subtitle">
+          Do turno extra no restaurante à equipe completa para o seu evento.
+        </p>
+        <div class="testimonial">
+          <fa-icon class="testimonial__quote" [icon]="icons.quote" />
+          <p>
+            “Precisávamos de 12 seguranças para um evento no fim de semana. Em uma tarde a equipe
+            estava fechada.”
+          </p>
+          <span class="testimonial__author">
+            <strong>Mariana Lopes</strong>
+            <small>Produtora de eventos</small>
+          </span>
+        </div>
+      </div>
+
+      <ul class="areas__grid">
+        @for (area of areas(); track area.slug) {
+          <li class="area-chip">
+            <span class="area-chip__icon">
+              <fa-icon [icon]="area.icon" />
+            </span>
+            {{ area.name }}
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta">
+        <div class="cta__content">
+          <h2 class="cta__title">Pronto para encontrar o profissional certo?</h2>
+          <p class="cta__text">
+            Crie sua conta empresarial gratuitamente e publique sua primeira vaga hoje.
+          </p>
+        </div>
+        <div class="cta__actions">
+          <a routerLink="/auth" class="btn btn--accent btn--lg">
+            Começar agora
+            <fa-icon [icon]="icons.arrow" />
+          </a>
+          <a routerLink="/contato" class="btn btn--light btn--lg">Falar com vendas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer />
