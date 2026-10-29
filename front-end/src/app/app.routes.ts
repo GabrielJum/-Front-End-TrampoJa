@@ -17,6 +17,16 @@ export const routes: Routes = [
             import('./pages/enterprise/enterprise').then(m => m.Enterprise)
     },
     {
+        path: 'empresas/login',
+        loadComponent: () =>
+            import('./pages/authEnterprise/login/login').then(m => m.Login)
+    },
+    {
+        path: 'empresas/cadastro',
+        loadComponent: () =>
+            import('./pages/authEnterprise/register/register').then(m => m.Register)
+    },
+    {
         path: 'vagas',
         loadComponent: () =>
             import('./pages/vacancy/vacancy').then(m => m.Vacancy)
