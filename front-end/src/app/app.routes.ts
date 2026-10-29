@@ -22,6 +22,11 @@ export const routes: Routes = [
             import('./pages/authEnterprise/login/login').then(m => m.Login)
     },
     {
+        path: 'empresas/cadastro',
+        loadComponent: () =>
+            import('./pages/authEnterprise/register/register').then(m => m.Register)
+    },
+    {
         path: 'vagas',
         loadComponent: () =>
             import('./pages/vacancy/vacancy').then(m => m.Vacancy)
