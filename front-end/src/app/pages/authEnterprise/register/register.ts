@@ -1,3 +1,4 @@
+import { EnterpriseService } from './../../../service/enterprise/enterprise';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
@@ -24,6 +25,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from '../../../components/footer/footer';
 import { Header } from '../../../components/header/header';
+import { Enterprise } from '../../../model/enterprise';
 
 interface Empresa {
   name: string;
@@ -104,6 +106,10 @@ export class Register {
   protected readonly loading = signal(false);
   protected readonly feedback = signal<Feedback>(null);
 
+  constructor(
+    private enterpriseService: EnterpriseService
+  ) { }
+
   protected readonly form = this.fb.group(
     {
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -137,47 +143,36 @@ export class Register {
     return this.form.hasError('passwordMismatch') && (c.touched || this.submitted());
   }
 
-  protected register(): void {
-    this.submitted.set(true);
-    this.feedback.set(null);
+  register(): void {
+    this.submitted.set(true)
+    this.feedback.set(null)
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const { name, email, cnpj, password } = this.form.getRawValue();
-    this.loading.set(true);
-    // Simula a latência da API enquanto o cadastro usa o localStorage
-    setTimeout(() => {
-      const empresas = this.getEmpresas();
-      const cnpjDigits = cnpj.replace(/\D/g, '');
+    const { name, email, cnpj } = this.form.getRawValue();
 
-      if (empresas.some((e) => e.email.toLowerCase() === email.toLowerCase())) {
-        this.loading.set(false);
-        this.feedback.set({ type: 'error', message: 'Já existe uma empresa com esse e-mail.' });
-        return;
+    const empresa: Enterprise = {
+      nome: name,
+      cnpj: cnpj,
+      razaoSocial: name,
+      endereco: '',
+    }
+
+    this.loading.set(true)
+
+    this.enterpriseService.cadastrar(empresa).subscribe({
+      next: (resposta) => {
+        console.log('Usuário cadastrado com sucesso!');
+      },
+
+      error: (erro) => {
+        console.error('Erro ao cadastrar usuário:');
       }
+    });
 
-      if (empresas.some((e) => e.cnpj === cnpjDigits)) {
-        this.loading.set(false);
-        this.feedback.set({ type: 'error', message: 'Esse CNPJ já está cadastrado.' });
-        return;
-      }
-
-      localStorage.setItem(
-        COMPANIES_KEY,
-        JSON.stringify([...empresas, { name: name.trim(), email, cnpj: cnpjDigits, password }]),
-      );
-      this.feedback.set({
-        type: 'success',
-        message: 'Empresa cadastrada! Redirecionando para o login...',
-      });
-      setTimeout(() => this.router.navigate(['/empresas/login']), 1500);
-    }, 500);
   }
 
-  private getEmpresas(): Empresa[] {
-    const dados = localStorage.getItem(COMPANIES_KEY);
-    return dados ? JSON.parse(dados) : [];
-  }
 }
