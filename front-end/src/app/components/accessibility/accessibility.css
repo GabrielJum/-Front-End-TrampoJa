@@ -1,0 +1,215 @@
+
+:host {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.accessibility-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: #18355a;
+  color: #fff;
+  box-shadow: 0 5px 18px rgb(0 0 0 / 25%);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.accessibility-trigger:hover {
+  background: #e87425;
+  transform: scale(1.06);
+}
+
+.accessibility-trigger svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.accessibility-panel {
+  position: absolute;
+  right: 0;
+  bottom: 72px;
+  width: min(340px, calc(100vw - 32px));
+  overflow: hidden;
+  border: 1px solid #e4e8ef;
+  border-radius: 18px;
+  background: #fff;
+  color: #1b2433;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 18%);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background: #18355a;
+  color: #fff;
+}
+
+.panel-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f5b17e;
+}
+
+.panel-header h2 {
+  margin: 5px 0 0;
+  font-size: 1.25rem;
+}
+
+.close-button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 15%);
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.panel-content {
+  padding: 4px 20px;
+}
+
+.accessibility-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 0;
+  border-bottom: 1px solid #e4e8ef;
+}
+
+.option-description {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.option-description strong {
+  font-size: 0.92rem;
+}
+
+.option-description span {
+  color: #5f6b7d;
+  font-size: 0.78rem;
+}
+
+.font-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.font-controls button,
+.toggle-button {
+  min-width: 38px;
+  min-height: 36px;
+  padding: 6px 9px;
+  border: 1px solid #d9e0e9;
+  border-radius: 8px;
+  background: #eef3f9;
+  color: #18355a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.font-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.font-controls span {
+  min-width: 42px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.toggle-button {
+  min-width: 88px;
+  font-size: 0.75rem;
+}
+
+.panel-footer {
+  padding: 14px 20px 18px;
+}
+
+.reset-button {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #e87425;
+  border-radius: 9px;
+  background: #fff;
+  color: #d0631a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background: #fdf1e8;
+}
+
+.accessibility-trigger:focus-visible,
+.accessibility-panel button:focus-visible {
+  outline: 3px solid #e87425;
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  :host {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+/* Adaptação do painel ao alto contraste */
+html.a11y-high-contrast app-root + app-accessibility .accessibility-panel {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+html.a11y-high-contrast app-root + app-accessibility .panel-header {
+  background: #000000;
+  color: #ffffff;
+}
+
+html.a11y-high-contrast app-root + app-accessibility .panel-eyebrow {
+  color: #ffffff;
+}
+
+html.a11y-high-contrast app-root + app-accessibility .option-description span {
+  color: #292929;
+}
+
+html.a11y-high-contrast app-root + app-accessibility .accessibility-option {
+  border-color: #555555;
+}
+
+html.a11y-high-contrast app-root + app-accessibility .font-controls button,
+html.a11y-high-contrast app-root + app-accessibility .toggle-button {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+html.a11y-high-contrast app-root + app-accessibility .reset-button {
+  background: #ffffff;
+  color: #702300;
+  border: 2px solid #702300;
+}

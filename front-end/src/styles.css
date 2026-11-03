@@ -1,3 +1,6 @@
+
+/*  Configurações gerais  */
+
 *,
 *::before,
 *::after {
@@ -7,6 +10,7 @@
 html {
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  font-size: calc(100% * var(--a11y-font-scale, 1));
 }
 
 body {
@@ -19,103 +23,29 @@ img {
   max-width: 100%;
 }
 
+/*  Layout  */
 
 .container {
   width: 100%;
   max-width: 1200px;
   margin-inline: auto;
   padding-inline: 24px;
-  box-sizing: border-box;
 }
 
 .sr-only {
   position: absolute;
-  width: 0;
-  height: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
+/*  Botões  */
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px 20px;
-  border: 1.5px solid transparent;
-  border-radius: 999px;
-  font: inherit;
-  font-size: 0.92rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-
-.btn:not(:disabled):hover {
-  transform: translateY(-2px);
-}
-
-.btn:focus-visible,
-a:focus-visible {
-  outline: 3px solid rgb(232 116 37 / 0.4);
-  outline-offset: 2px;
-}
-
-.btn--primary {
-  background: var(--primary);
-  color: #fff;
-  box-shadow: var(--shadow);
-}
-
-.btn--primary:hover {
-  background: var(--primary-700);
-}
-
-.btn--accent {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 10px 22px -10px rgb(232 116 37 / 0.7);
-}
-
-.btn--accent:hover {
-  background: var(--accent-600);
-}
-
-.btn--outline {
-  background: var(--surface);
-  color: var(--primary);
-  border-color: var(--border);
-}
-
-.btn--outline:hover {
-  border-color: var(--primary);
-}
-
-.btn--ghost {
-  background: var(--primary-50);
-  color: var(--primary);
-}
-
-.btn--success {
-  background: rgb(31 157 97 / 0.1);
-  color: var(--success);
-  cursor: default;
-}
-
-.btn--block {
-  width: 100%;
-  margin-top: 8px;
-}
-
-.eyebrow {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-
-/* ---------- Botões ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -136,7 +66,7 @@ a:focus-visible {
     color 0.2s ease;
 }
 
-.btn:hover {
+.btn:not(:disabled):hover {
   transform: translateY(-2px);
 }
 
@@ -186,4 +116,296 @@ button:focus-visible {
 
 .btn--outline:hover {
   border-color: var(--primary);
+}
+
+.btn--ghost {
+  background: var(--primary-50);
+  color: var(--primary);
+}
+
+.btn--success {
+  background: rgb(31 157 97 / 0.1);
+  color: var(--success);
+  cursor: default;
+}
+
+.btn--block {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+
+/* ACESSIBILIDADE: ALTO CONTRASTE */
+
+html.a11y-high-contrast app-root {
+  --primary: #000000;
+  --primary-700: #171717;
+  --primary-50: #e5e5e5;
+
+  --accent: #8a2b00;
+  --accent-600: #702300;
+  --accent-50: #fff0e6;
+
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --text: #000000;
+  --muted: #292929;
+  --border: #555555;
+
+  --shadow-sm: none;
+  --shadow: none;
+  --shadow-lg: none;
+
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Textos gerais */
+html.a11y-high-contrast app-root :is(
+  h1, h2, h3, h4, h5, p, span, li,
+  label, strong, small, legend, em
+) {
+  color: #000000;
+}
+
+/* Textos secundários */
+html.a11y-high-contrast app-root :is(
+  .muted, .text-muted, .job__meta,
+  .hero__subtitle, .option-description span
+) {
+  color: #292929 !important;
+}
+
+/* Links */
+html.a11y-high-contrast app-root a:not(.btn):not(.tab) {
+  color: #0037a6;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Cabeçalho */
+html.a11y-high-contrast app-root .header {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-bottom: 2px solid #000000 !important;
+}
+
+html.a11y-high-contrast app-root .nav__link {
+  color: #000000 !important;
+}
+
+/* Cartões e superfícies */
+html.a11y-high-contrast app-root :is(
+  .card,
+  .category-card,
+  .job,
+  .filters,
+  .empty,
+  .float-card,
+  .trust,
+  .tabs
+) {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #555555 !important;
+  box-shadow: none !important;
+}
+
+/* Botão principal: preto com texto branco */
+html.a11y-high-contrast app-root .btn--primary {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #000000 !important;
+}
+
+/* Botão de destaque: branco com texto preto */
+html.a11y-high-contrast app-root .btn--accent {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+  box-shadow: none !important;
+}
+
+/* Botões secundários */
+html.a11y-high-contrast app-root :is(
+  .btn--outline,
+  .btn--ghost,
+  .btn--success
+) {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+  box-shadow: none !important;
+}
+
+/* Textos e ícones dentro dos botões */
+html.a11y-high-contrast app-root .btn--primary *,
+html.a11y-high-contrast app-root .tab.is-active * {
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast app-root :is(
+  .btn--accent *,
+  .btn--outline *,
+  .btn--ghost *,
+  .btn--success *
+) {
+  color: #000000 !important;
+}
+
+/* Abas selecionadas */
+html.a11y-high-contrast app-root .tab.is-active {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #000000 !important;
+}
+
+/* Abas não selecionadas */
+html.a11y-high-contrast app-root .tab:not(.is-active) {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #555555 !important;
+}
+
+/* Formulários */
+html.a11y-high-contrast app-root :is(
+  input, textarea, select
+) {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+}
+
+/* Foco de teclado */
+html.a11y-high-contrast app-root :is(
+  a, button, input, textarea, select
+):focus-visible {
+  outline: 3px solid #e87425 !important;
+  outline-offset: 3px;
+}
+
+/* Painel de acessibilidade */
+html.a11y-high-contrast app-root .accessibility-panel {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+}
+
+html.a11y-high-contrast app-root .panel-header {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast app-root .panel-header h2,
+html.a11y-high-contrast app-root .panel-header span {
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast app-root .option-description span {
+  color: #292929 !important;
+}
+
+
+/* RODAPÉ: ALTO CONTRASTE */
+
+html.a11y-high-contrast app-root .footer {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-top: 3px solid #000000 !important;
+}
+
+/* Textos do rodapé */
+html.a11y-high-contrast app-root .footer :is(
+  p, span, h3, strong
+) {
+  color: #000000 !important;
+}
+
+/* Marca do rodapé */
+html.a11y-high-contrast app-root .footer .brand--light {
+  color: #000000 !important;
+}
+
+html.a11y-high-contrast app-root .footer .brand__mark {
+  background: #e5e5e5 !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+/* Links do rodapé */
+html.a11y-high-contrast app-root .footer .footer__list a {
+  color: #0037a6 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Ícones sociais */
+html.a11y-high-contrast app-root .footer .socials a {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+}
+
+/* Área inferior do rodapé */
+html.a11y-high-contrast app-root .footer .footer__bottom {
+  background: #ffffff !important;
+  border-top: 2px solid #555555 !important;
+  color: #292929 !important;
+}
+
+html.a11y-high-contrast app-root .footer .footer__bottom span {
+  color: #292929 !important;
+}
+
+
+/* ACESSIBILIDADE: MODO DE LEITURA */
+
+/* Melhora o conforto da leitura */
+html.a11y-reading-mode body {
+  line-height: 1.8;
+  letter-spacing: 0.025em;
+  word-spacing: 0.08em;
+}
+
+/* Limita a largura dos textos */
+html.a11y-reading-mode app-root p,
+html.a11y-reading-mode app-root li {
+  max-width: 75ch;
+  line-height: 1.9;
+  margin-bottom: 0.8em;
+}
+
+/* Destaca os blocos de conteúdo */
+html.a11y-reading-mode app-root main {
+  line-height: 1.8;
+}
+
+/* Facilita a identificação dos títulos */
+html.a11y-reading-mode app-root h1,
+html.a11y-reading-mode app-root h2,
+html.a11y-reading-mode app-root h3 {
+  line-height: 1.4;
+  margin-bottom: 0.8em;
+}
+
+/* Melhora a leitura de campos de texto */
+html.a11y-reading-mode app-root :is(
+  input, textarea, select
+) {
+  line-height: 1.6;
+}
+
+/* Reduz animações e distrações */
+html.a11y-reading-mode app-root * {
+  scroll-behavior: auto;
 }

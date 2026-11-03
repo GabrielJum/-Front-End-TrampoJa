@@ -15,6 +15,7 @@
   --radius-sm: 10px;
   --radius: 16px;
   --radius-lg: 28px;
+
   --shadow-sm: 0 1px 2px rgb(24 53 90 / 0.06), 0 1px 3px rgb(24 53 90 / 0.04);
   --shadow: 0 8px 24px -8px rgb(24 53 90 / 0.14);
   --shadow-lg: 0 24px 48px -16px rgb(24 53 90 / 0.22);
@@ -25,4 +26,57 @@
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Escala global do texto */
+html {
+  font-size: calc(16px * var(--a11y-font-scale, 1));
+}
+
+/* Alto contraste */
+html.a11y-high-contrast app-root {
+  --primary: #000000;
+  --primary-700: #000000;
+  --primary-50: #e5e5e5;
+
+  --accent: #8a2b00;
+  --accent-600: #702300;
+  --accent-50: #fff0e6;
+
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --text: #000000;
+  --muted: #292929;
+  --border: #555555;
+
+  --shadow-sm: none;
+  --shadow: none;
+  --shadow-lg: none;
+}
+
+/* Destaque dos elementos interativos */
+html.a11y-high-contrast app-root a,
+html.a11y-high-contrast app-root button,
+html.a11y-high-contrast app-root select,
+html.a11y-high-contrast app-root input,
+html.a11y-high-contrast app-root textarea {
+  outline-offset: 3px;
+}
+
+html.a11y-high-contrast app-root a:focus-visible,
+html.a11y-high-contrast app-root button:focus-visible,
+html.a11y-high-contrast app-root select:focus-visible,
+html.a11y-high-contrast app-root input:focus-visible,
+html.a11y-high-contrast app-root textarea:focus-visible {
+  outline: 3px solid #000000;
+}
+
+/* Modo de leitura */
+html.a11y-reading-mode app-root {
+  line-height: 1.8;
+  letter-spacing: 0.025em;
+}
+
+html.a11y-reading-mode app-root p {
+  line-height: 1.9;
 }

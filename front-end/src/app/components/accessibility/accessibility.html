@@ -1,0 +1,114 @@
+
+<button
+  class="accessibility-trigger"
+  type="button"
+  aria-label="Abrir opções de acessibilidade"
+  aria-controls="accessibility-panel"
+  [attr.aria-expanded]="isOpen()"
+  (click)="togglePanel()"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="4" r="2"></circle>
+    <path d="M4 8h16M12 8v12M8 20l4-7 4 7"></path>
+  </svg>
+</button>
+
+@if (isOpen()) {
+  <section
+    class="accessibility-panel"
+    id="accessibility-panel"
+    role="region"
+    aria-labelledby="accessibility-title"
+  >
+    <header class="panel-header">
+      <div>
+        <span class="panel-eyebrow">Trampo Já!</span>
+        <h2 id="accessibility-title">Acessibilidade</h2>
+      </div>
+
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Fechar painel de acessibilidade"
+        (click)="closePanel()"
+      >
+        &times;
+      </button>
+    </header>
+
+    <div class="panel-content">
+      <div class="accessibility-option">
+        <div class="option-description">
+          <strong>Tamanho do texto</strong>
+          <span>Ajuste a leitura do conteúdo</span>
+        </div>
+
+        <div class="font-controls">
+          <button
+            type="button"
+            aria-label="Diminuir tamanho do texto"
+            [disabled]="fontSize() <= 80"
+            (click)="decreaseFont()"
+          >
+            A-
+          </button>
+
+          <span aria-live="polite">{{ fontSize() }}%</span>
+
+          <button
+            type="button"
+            aria-label="Aumentar tamanho do texto"
+            [disabled]="fontSize() >= 150"
+            (click)="increaseFont()"
+          >
+            A+
+          </button>
+        </div>
+      </div>
+
+      <div class="accessibility-option">
+        <div class="option-description">
+          <strong>Alto contraste</strong>
+          <span>Melhora a distinção entre cores</span>
+        </div>
+
+        <button
+          type="button"
+          class="toggle-button"
+          role="switch"
+          [attr.aria-checked]="highContrast()"
+          (click)="toggleContrast()"
+        >
+          {{ highContrast() ? 'Ativado' : 'Desativado' }}
+        </button>
+      </div>
+
+      <div class="accessibility-option">
+        <div class="option-description">
+          <strong>Modo de leitura</strong>
+          <span>Melhora o conforto durante a leitura</span>
+        </div>
+
+        <button
+          type="button"
+          class="toggle-button"
+          role="switch"
+          [attr.aria-checked]="readingMode()"
+          (click)="toggleReadingMode()"
+        >
+          {{ readingMode() ? 'Ativado' : 'Desativado' }}
+        </button>
+      </div>
+    </div>
+
+    <footer class="panel-footer">
+      <button
+        type="button"
+        class="reset-button"
+        (click)="restoreDefaults()"
+      >
+        Restaurar configurações
+      </button>
+    </footer>
+  </section>
+}
