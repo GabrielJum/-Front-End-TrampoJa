@@ -1,0 +1,374 @@
+<app-header />
+
+<main class="container page">
+  <!-- ============ CABEÇALHO ============ -->
+  <div class="page__head">
+    <div>
+      <span class="eyebrow">Área da empresa · {{ companyName }}</span>
+      <h1 class="page__title">Minhas vagas</h1>
+      <p class="page__subtitle">Crie, edite e encerre as vagas publicadas pela sua empresa.</p>
+    </div>
+    <button type="button" class="btn btn--accent btn--lg" (click)="openCreate()">
+      <fa-icon [icon]="icons.plus" />
+      Nova vaga
+    </button>
+  </div>
+
+  <!-- ============ RESUMO ============ -->
+  <ul class="stats" aria-label="Resumo das vagas">
+    <li class="stat">
+      <span class="stat__icon"><fa-icon [icon]="icons.briefcase" /></span>
+      <div>
+        <strong>{{ stats().total }}</strong>
+        <small>Vagas criadas</small>
+      </div>
+    </li>
+    <li class="stat">
+      <span class="stat__icon stat__icon--success"><fa-icon [icon]="icons.check" /></span>
+      <div>
+        <strong>{{ stats().open }}</strong>
+        <small>Abertas</small>
+      </div>
+    </li>
+    <li class="stat">
+      <span class="stat__icon stat__icon--muted"><fa-icon [icon]="icons.ban" /></span>
+      <div>
+        <strong>{{ stats().closed }}</strong>
+        <small>Encerradas</small>
+      </div>
+    </li>
+    <li class="stat">
+      <span class="stat__icon stat__icon--accent"><fa-icon [icon]="icons.users" /></span>
+      <div>
+        <strong>{{ stats().candidates }}</strong>
+        <small>Candidatos em vagas abertas</small>
+      </div>
+    </li>
+  </ul>
+
+  <!-- ============ FILTROS ============ -->
+  <div class="toolbar">
+    <div class="segmented" role="tablist" aria-label="Filtrar por status">
+      @for (f of filters(); track f.id) {
+        <button
+          type="button"
+          role="tab"
+          class="segmented__btn"
+          [class.is-active]="statusFilter() === f.id"
+          [attr.aria-selected]="statusFilter() === f.id"
+          (click)="setFilter(f.id)"
+        >
+          {{ f.label }}
+          <span class="segmented__count">{{ f.count }}</span>
+        </button>
+      }
+    </div>
+
+    <label class="search">
+      <fa-icon [icon]="icons.search" />
+      <span class="sr-only">Buscar vaga</span>
+      <input
+        type="search"
+        placeholder="Buscar por função, categoria ou cidade"
+        [value]="search()"
+        (input)="onSearch($event)"
+      />
+    </label>
+  </div>
+
+  <!-- ============ LISTA ============ -->
+  <section class="jobs" aria-label="Vagas da empresa">
+    @for (job of visibleJobs(); track job.id) {
+      <article class="job" [class.is-closed]="job.status === 'closed'">
+        <div class="job__main">
+          <div class="job__top">
+            <div>
+              <div class="job__tags">
+                <span class="tag">{{ job.category }}</span>
+                <span class="status" [class]="'status status--' + job.status">
+                  {{ job.status === 'open' ? 'Aberta' : 'Encerrada' }}
+                </span>
+              </div>
+              <h2 class="job__role">{{ job.role }}</h2>
+            </div>
+
+            <p class="job__price">{{ job.priceLabel }} <small>/ diária</small></p>
+          </div>
+
+          <ul class="job__meta">
+            <li><fa-icon [icon]="icons.calendar" /> {{ job.dateLabel }} · {{ job.period }}</li>
+            <li><fa-icon [icon]="icons.clock" /> {{ job.start }} – {{ job.end }} ({{ job.duration }}h)</li>
+            <li><fa-icon [icon]="icons.location" /> {{ job.location }}</li>
+            <li class="job__candidates">
+              <fa-icon [icon]="icons.users" />
+              {{ job.candidates }} {{ job.candidates === 1 ? 'candidato' : 'candidatos' }}
+            </li>
+          </ul>
+
+          @if (expandedId() === job.id) {
+            <div class="job__details" [id]="'details-' + job.id">
+              <div>
+                <h3>Sobre a vaga</h3>
+                <p>{{ job.summary }}</p>
+              </div>
+              @if (job.requirements.length) {
+                <div>
+                  <h3>Requisitos</h3>
+                  <ul class="requirements">
+                    @for (req of job.requirements; track $index) {
+                      <li>{{ req }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+              <div>
+                <h3>Endereço</h3>
+                <p>{{ job.address }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="job__actions">
+          <button
+            type="button"
+            class="btn btn--ghost"
+            [attr.aria-expanded]="expandedId() === job.id"
+            [attr.aria-controls]="'details-' + job.id"
+            (click)="toggleDetails(job.id)"
+          >
+            {{ expandedId() === job.id ? 'Ocultar detalhes' : 'Ver detalhes' }}
+            <fa-icon class="chevron" [class.is-open]="expandedId() === job.id" [icon]="icons.chevron" />
+          </button>
+
+          <div class="job__actions-end">
+            @if (job.status === 'open') {
+              <button type="button" class="btn btn--outline" (click)="openEdit(job)">
+                <fa-icon [icon]="icons.pen" />
+                Editar
+              </button>
+              <button type="button" class="btn btn--danger" (click)="askClose(job)">
+                <fa-icon [icon]="icons.ban" />
+                Encerrar
+              </button>
+            } @else {
+              <button type="button" class="btn btn--outline" (click)="reopen(job)">
+                <fa-icon [icon]="icons.reopen" />
+                Reabrir vaga
+              </button>
+            }
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty">
+        <span class="empty__icon"><fa-icon [icon]="icons.empty" /></span>
+        <h2>Nenhuma vaga por aqui</h2>
+        <p>
+          {{ search() || statusFilter() !== 'all'
+            ? 'Tente ajustar a busca ou o filtro de status.'
+            : 'Publique sua primeira vaga e comece a receber candidatos.' }}
+        </p>
+        <button type="button" class="btn btn--accent" (click)="openCreate()">
+          <fa-icon [icon]="icons.plus" />
+          Criar vaga
+        </button>
+      </div>
+    }
+  </section>
+</main>
+
+<app-footer />
+
+<!-- ============ MODAL: CRIAR / EDITAR ============ -->
+@if (formOpen()) {
+  <div class="overlay" (click)="closeDialogs()">
+    <section
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="form-title"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal__head">
+        <div>
+          <h2 id="form-title" class="modal__title">
+            {{ editingId() === null ? 'Nova vaga' : 'Editar vaga' }}
+          </h2>
+          <p class="modal__subtitle">Preencha as informações que os freelancers vão ver.</p>
+        </div>
+        <button type="button" class="icon-btn" aria-label="Fechar" (click)="closeDialogs()">
+          <fa-icon [icon]="icons.close" />
+        </button>
+      </header>
+
+      <form class="form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <div class="form__grid">
+          <label class="field field--wide">
+            <span class="field__label">Função</span>
+            <input
+              type="text"
+              formControlName="role"
+              placeholder="Ex.: Garçom, Segurança, Entregador"
+              [class.is-invalid]="showError('role')"
+            />
+            @if (showError('role')) {
+              <span class="field__error">Informe a função (mínimo 3 caracteres).</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field__label">Categoria</span>
+            <select formControlName="category">
+              @for (cat of categories; track cat) {
+                <option [value]="cat">{{ cat }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Valor da diária (R$)</span>
+            <input
+              type="number"
+              min="1"
+              step="0.01"
+              formControlName="price"
+              placeholder="150"
+              [class.is-invalid]="showError('price')"
+            />
+            @if (showError('price')) {
+              <span class="field__error">Informe um valor maior que zero.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field__label">Data</span>
+            <input
+              type="date"
+              formControlName="date"
+              [min]="editingId() === null ? today : null"
+              [class.is-invalid]="showError('date')"
+            />
+            @if (showError('date')) {
+              <span class="field__error">Informe a data.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field__label">Período</span>
+            <select formControlName="period">
+              @for (p of periods; track p) {
+                <option [value]="p">{{ p }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Início</span>
+            <input type="time" formControlName="start" [class.is-invalid]="showError('start')" />
+            @if (showError('start')) {
+              <span class="field__error">Informe o horário de início.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field__label">Término</span>
+            <input type="time" formControlName="end" [class.is-invalid]="showError('end')" />
+            @if (showError('end')) {
+              <span class="field__error">Informe o horário de término.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field__label">Cidade</span>
+            <input
+              type="text"
+              formControlName="location"
+              placeholder="Ex.: Mogi das Cruzes"
+              [class.is-invalid]="showError('location')"
+            />
+            @if (showError('location')) {
+              <span class="field__error">Informe a cidade.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field__label">Endereço completo</span>
+            <input
+              type="text"
+              formControlName="address"
+              placeholder="Rua, número - Bairro - Cidade/UF"
+              [class.is-invalid]="showError('address')"
+            />
+            @if (showError('address')) {
+              <span class="field__error">Informe o endereço.</span>
+            }
+          </label>
+
+          <label class="field field--wide">
+            <span class="field__label">Sobre a vaga</span>
+            <textarea
+              rows="3"
+              formControlName="summary"
+              placeholder="Descreva as atividades e o contexto do trabalho"
+              [class.is-invalid]="showError('summary')"
+            ></textarea>
+            @if (showError('summary')) {
+              <span class="field__error">Descreva a vaga (mínimo 10 caracteres).</span>
+            }
+          </label>
+
+          <label class="field field--wide">
+            <span class="field__label">Requisitos <small>(um por linha, opcional)</small></span>
+            <textarea
+              rows="3"
+              formControlName="requirements"
+              placeholder="Ex.: Experiência com atendimento&#10;Traje social preto"
+            ></textarea>
+          </label>
+        </div>
+
+        <footer class="modal__actions">
+          <button type="button" class="btn btn--outline" (click)="closeDialogs()">Cancelar</button>
+          <button type="submit" class="btn btn--accent">
+            {{ editingId() === null ? 'Publicar vaga' : 'Salvar alterações' }}
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
+}
+
+<!-- ============ MODAL: ENCERRAR ============ -->
+@if (closingJob(); as job) {
+  <div class="overlay" (click)="closeDialogs()">
+    <section
+      class="modal modal--sm"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="close-title"
+      aria-describedby="close-text"
+      (click)="$event.stopPropagation()"
+    >
+      <span class="modal__alert-icon"><fa-icon [icon]="icons.warning" /></span>
+      <h2 id="close-title" class="modal__title">Encerrar vaga de {{ job.role }}?</h2>
+      <p id="close-text" class="modal__subtitle">
+        A vaga deixa de aparecer para os freelancers e não recebe novas candidaturas. Você pode
+        reabri-la depois.
+      </p>
+      <footer class="modal__actions">
+        <button type="button" class="btn btn--outline" (click)="closeDialogs()">Cancelar</button>
+        <button type="button" class="btn btn--danger-solid" (click)="confirmClose()">
+          Encerrar vaga
+        </button>
+      </footer>
+    </section>
+  </div>
+}
+
+@if (toast(); as message) {
+  <div class="toast" role="status">
+    <fa-icon [icon]="icons.check" />
+    {{ message }}
+  </div>
+}
