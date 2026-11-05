@@ -1,18 +1,18 @@
 <app-header />
 
+
 <main class="container page">
   <!-- ============ CABEÇALHO ============ -->
   <div class="page__head">
     <div>
       <span class="eyebrow">Área da empresa · {{ companyName }}</span>
       <h1 class="page__title">Minhas vagas</h1>
-      <p class="page__subtitle">Crie, edite e encerre as vagas publicadas pela sua empresa.</p>
+      <app-navigation-tabs />
+
     </div>
-    <button type="button" class="btn btn--accent btn--lg" (click)="openCreate()">
-      <fa-icon [icon]="icons.plus" />
-      Nova vaga
-    </button>
+
   </div>
+
 
   <!-- ============ RESUMO ============ -->
   <ul class="stats" aria-label="Resumo das vagas">
@@ -48,22 +48,6 @@
 
   <!-- ============ FILTROS ============ -->
   <div class="toolbar">
-    <div class="segmented" role="tablist" aria-label="Filtrar por status">
-      @for (f of filters(); track f.id) {
-        <button
-          type="button"
-          role="tab"
-          class="segmented__btn"
-          [class.is-active]="statusFilter() === f.id"
-          [attr.aria-selected]="statusFilter() === f.id"
-          (click)="setFilter(f.id)"
-        >
-          {{ f.label }}
-          <span class="segmented__count">{{ f.count }}</span>
-        </button>
-      }
-    </div>
-
     <label class="search">
       <fa-icon [icon]="icons.search" />
       <span class="sr-only">Buscar vaga</span>
@@ -74,6 +58,11 @@
         (input)="onSearch($event)"
       />
     </label>
+
+    <button type="button" class="btn btn--accent btn--lg" (click)="openCreate()">
+      <fa-icon [icon]="icons.plus" />
+      Nova vaga
+    </button>
   </div>
 
   <!-- ============ LISTA ============ -->

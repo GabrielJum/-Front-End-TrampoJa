@@ -19,7 +19,7 @@
         </nav>
 
         <div class="header__actions">
-            @if (currentUrl !== '/') {
+            @if (currentUrl !== '/' && currentUrl !== '/auth' && currentUrl !== '/auth' && currentUrl !== '/empresas' && currentUrl !== '/empresas/cadastro' && currentUrl !== '/empresas/login' && currentUrl !== '/freelancers' && currentUrl !== '/freelancers/cadastro' && currentUrl !== '/contato'  ) {
                 <a routerLink="/perfil" class="avatar" aria-label="Meu perfil">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <circle cx="12" cy="8" r="4" />
