@@ -27,6 +27,11 @@ export const routes: Routes = [
             import('./pages/authEnterprise/register/register').then(m => m.Register)
     },
     {
+        path: 'gerenciar-vagas',
+        loadComponent: () =>
+            import('./pages/vacancy-manage/vacancy-manage').then(m => m.VacancyManage)
+    },
+    {
         path: 'vagas',
         loadComponent: () =>
             import('./pages/vacancy/vacancy').then(m => m.Vacancy)
@@ -37,7 +42,7 @@ export const routes: Routes = [
             import('./pages/vacancy/vacancy-detail/vacancy-detail').then(m => m.VacancyDetail)
     },
     {
-        path: 'chat', 
+        path: 'chat',
         loadComponent: () =>
             import('./pages/chat/chat').then(m => m.Chat)
     },
