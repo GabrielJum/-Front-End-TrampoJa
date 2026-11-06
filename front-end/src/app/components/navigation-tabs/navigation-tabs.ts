@@ -25,7 +25,7 @@ export class NavigationTabs {
       return [
         { label: 'Vagas', path: '/vagas' },
         { label: 'Chat', path: '/chat', badge: 2 },
-        { label: 'Solicitações', path: '/solicitacoes' },
+        { label: 'Solicitações', path: '/freelancer/solicitacoes' },
         { label: 'Avaliações', path: '/avaliacoes', badge: 7 },
       ];
     }
@@ -33,7 +33,7 @@ export class NavigationTabs {
     return [
       { label: 'Gerenciar vagas', path: '/gerenciar-vagas' },
       { label: 'Chat', path: '/chat', badge: 2 },
-      { label: 'Solicitações', path: '/solicitacoes' },
+      { label: 'Solicitações', path: '/empresa/solicitacoes' },
       { label: 'Avaliações', path: '/avaliacoes', badge: 7 },
 
     ];

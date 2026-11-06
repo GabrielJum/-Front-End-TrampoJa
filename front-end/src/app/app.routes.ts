@@ -47,9 +47,14 @@ export const routes: Routes = [
             import('./pages/chat/chat').then(m => m.Chat)
     },
     {
-        path: 'solicitacoes',
+        path: 'freelancer/solicitacoes',
         loadComponent: () =>
-            import('./pages/solicitation/solicitation').then(m => m.Solicitation)
+            import('./pages/solicitation-freelancer/solicitation-freelancer').then(m => m.SolicitationFreelancer)
+    },
+    {
+        path: 'empresa/solicitacoes',
+        loadComponent: () =>
+            import('./pages/solicitation-enterprise/solicitation-enterprise').then(m => m.SolicitationEnterprise)
     },
     {
         path: 'perfil',
@@ -64,7 +69,7 @@ export const routes: Routes = [
     {
         path: 'avaliacoes',
         loadComponent: () =>
-            import('./review/review').then(m => m.Review)
+            import('./pages/review/review').then(m => m.Review)
     },
 
 ];

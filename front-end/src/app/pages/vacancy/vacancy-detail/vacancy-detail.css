@@ -280,41 +280,6 @@ ul {
   stroke-width: 3;
 }
 
-.location {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.location__icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius);
-  background: var(--accent-50);
-  color: var(--accent);
-}
-
-.location__icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.location__body {
-  flex: 1;
-  min-width: 0;
-}
-
-.location__body .card__text {
-  margin-top: 4px;
-}
-
-.location__cta {
-  flex-shrink: 0;
-}
-
 /* ---------- Candidatura ---------- */
 .apply {
   position: sticky;
@@ -469,15 +434,6 @@ ul {
   .apply {
     padding: 22px;
   }
-
-  .location {
-    flex-wrap: wrap;
-  }
-
-  .location__cta {
-    flex: 1 1 100%;
-  }
-
 }
 
 @media (prefers-reduced-motion: reduce) {

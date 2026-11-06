@@ -1,0 +1,16 @@
+<div class="banner" [class]="'banner--' + status()">
+  <span class="banner__icon" aria-hidden="true"><fa-icon [icon]="icon()" /></span>
+  <div>
+    <p class="banner__label">Status: <strong>{{ label() }}</strong></p>
+    <p class="banner__text">{{ message() }}</p>
+  </div>
+</div>
+
+<ol class="steps" [class.is-canceled]="status() === 'canceled'" aria-label="Andamento">
+  @for (step of steps(); track $index) {
+    <li class="step" [class.is-done]="step.done">
+      <span class="step__dot" aria-hidden="true"><fa-icon [icon]="checkIcon" /></span>
+      {{ step.label }}
+    </li>
+  }
+</ol>

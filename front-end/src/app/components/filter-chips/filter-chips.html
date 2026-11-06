@@ -1,0 +1,15 @@
+<div class="chips" role="group" [attr.aria-label]="label()">
+  @for (f of options(); track f.id) {
+    <button
+      type="button"
+      class="chip"
+      [class]="'chip--' + f.id"
+      [class.is-active]="value() === f.id"
+      [attr.aria-pressed]="value() === f.id"
+      (click)="valueChange.emit(f.id)"
+    >
+      {{ f.label }}
+      <span class="chip__count">{{ f.count }}</span>
+    </button>
+  }
+</div>

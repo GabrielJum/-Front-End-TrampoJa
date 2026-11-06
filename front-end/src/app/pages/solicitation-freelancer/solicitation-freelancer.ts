@@ -2,9 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { RouterLink } from '@angular/router';
 import { Header } from '../../components/header/header';
 import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
+import { FilterChips } from '../../components/filter-chips/filter-chips';
+import { Address } from '../../components/address/address';
 import { Footer } from '../../components/footer/footer';
+import { StatusVacancy, VacancyStatus } from '../../components/status-vacancy/status-vacancy';
 
-type Status = 'confirmed' | 'review' | 'canceled';
+type Status = VacancyStatus;
 type StatusFilter = 'all' | Status;
 
 interface Request {
@@ -116,13 +119,13 @@ const REQUESTS: Request[] = [
 ];
 
 @Component({
-  selector: 'app-solicitation',
-  imports: [RouterLink, Header, NavigationTabs, Footer],
-  templateUrl: './solicitation.html',
-  styleUrl: './solicitation.css',
+  selector: 'app-solicitation-freelancer',
+  imports: [RouterLink, Header, NavigationTabs, Footer, StatusVacancy, FilterChips, Address],
+  templateUrl: './solicitation-freelancer.html',
+  styleUrl: './solicitation-freelancer.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Solicitation {
+export class SolicitationFreelancer {
   private readonly currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
   private readonly dateFmt = new Intl.DateTimeFormat('pt-BR', {
     weekday: 'long',
@@ -173,7 +176,6 @@ export class Solicitation {
       priceLabel: this.currency.format(req.price),
       dateLabel: this.dateFmt.format(toDate(req.date)),
       city: req.address.split(' - ').at(-1),
-      mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(req.address)}`,
       steps: [
         { label: 'Enviada', done: true },
         { label: 'Em análise', done: req.status !== 'canceled' },

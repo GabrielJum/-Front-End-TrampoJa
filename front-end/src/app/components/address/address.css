@@ -1,0 +1,72 @@
+:host {
+  display: block;
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.address:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.address:focus-visible {
+  outline: 3px solid rgb(232 116 37 / 0.4);
+  outline-offset: 2px;
+}
+
+.address__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--accent-50);
+  color: var(--accent);
+}
+
+.address__body {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.address__body small {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.address__arrow {
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.address:hover .address__arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .address,
+  .address__arrow {
+    transition: none;
+  }
+}

@@ -11,20 +11,12 @@
   <app-navigation-tabs />
 
   <!-- ============ FILTRO ============ -->
-  <div class="chips" role="group" aria-label="Filtrar avaliações">
-    @for (f of filters(); track f.id) {
-      <button
-        type="button"
-        class="chip"
-        [class.is-active]="filter() === f.id"
-        [attr.aria-pressed]="filter() === f.id"
-        (click)="setFilter(f.id)"
-      >
-        {{ f.label }}
-        <span class="chip__count">{{ f.count }}</span>
-      </button>
-    }
-  </div>
+  <app-filter-chips
+    label="Filtrar avaliações"
+    [options]="filters()"
+    [value]="filter()"
+    (valueChange)="setFilter($event)"
+  />
 
   @if (selected(); as review) {
     <div class="layout">

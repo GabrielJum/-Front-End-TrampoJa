@@ -15,9 +15,10 @@ import {
   faQuoteLeft,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer } from '../components/footer/footer';
-import { Header } from '../components/header/header';
-import { NavigationTabs } from '../components/navigation-tabs/navigation-tabs';
+import { FilterChips } from '../../components/filter-chips/filter-chips';
+import { Footer } from '../../components/footer/footer';
+import { Header } from '../../components/header/header';
+import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
 
 type CriterionId = 'location' | 'commitment' | 'environment';
 type ReviewFilter = 'all' | 'pending' | 'done';
@@ -98,7 +99,7 @@ const REVIEWS: ReviewItem[] = [
 
 @Component({
   selector: 'app-review',
-  imports: [FormsModule, FontAwesomeModule, Header, NavigationTabs, Footer],
+  imports: [FormsModule, FontAwesomeModule, Header, NavigationTabs, Footer, FilterChips],
   templateUrl: './review.html',
   styleUrl: './review.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
