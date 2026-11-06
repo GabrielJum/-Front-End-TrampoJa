@@ -1,0 +1,186 @@
+<app-header />
+
+<main class="container page">
+  <!-- ============ TÍTULO + ABAS ============ -->
+  <div class="page__head">
+    <span class="eyebrow">Área da empresa</span>
+    <h1 class="page__title">Solicitações</h1>
+  </div>
+
+  <app-navigation-tabs />
+
+  <!-- ============ FILTROS ============ -->
+  <div class="toolbar">
+    <app-filter-chips
+      label="Filtrar por status"
+      [options]="filters()"
+      [value]="filter()"
+      (valueChange)="setFilter($event)"
+    />
+
+    <label class="job-select">
+      <fa-icon [icon]="icons.briefcase" />
+      <span class="sr-only">Filtrar por vaga</span>
+      <select (change)="setJobFilter($event)">
+        <option value="">Todas as vagas</option>
+        @for (job of jobs(); track job.id) {
+          <option [value]="job.id">{{ job.role }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  @if (selected(); as app) {
+    <div class="layout">
+      <!-- ============ LISTA DE CANDIDATOS ============ -->
+      <ul class="list" aria-label="Candidatos">
+        @for (item of visibleApplications(); track item.id) {
+          <li>
+            <button
+              type="button"
+              class="item"
+              [class.is-active]="app.id === item.id"
+              [attr.aria-current]="app.id === item.id"
+              (click)="select(item.id)"
+            >
+              <span class="item__avatar" aria-hidden="true">{{ item.initials }}</span>
+              <span class="item__body">
+                <strong>{{ item.candidate.name }}</strong>
+                <span class="item__role">{{ item.job.role }} · recebida em {{ item.sentLabel }}</span>
+              </span>
+              <span class="status" [class]="'status--' + item.status">{{ item.statusLabel }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+
+      <!-- ============ DETALHE ============ -->
+      <article class="detail" aria-labelledby="detail-title">
+        <!-- Status -->
+        <app-status-vacancy
+          [status]="app.status"
+          [label]="app.statusLabel"
+          [message]="app.statusMessage"
+          [steps]="app.steps"
+        />
+
+        <!-- Candidato -->
+        <header class="candidate">
+          <div class="candidate__avatar">
+            @if (app.candidate.avatarUrl) {
+              <img [src]="app.candidate.avatarUrl" [alt]="'Foto de ' + app.candidate.name" />
+            } @else {
+              <span aria-hidden="true">{{ app.initials }}</span>
+            }
+          </div>
+          <div class="candidate__info">
+            <span class="tag">Candidato</span>
+            <h2 id="detail-title" class="candidate__name">{{ app.candidate.name }}</h2>
+            <p class="candidate__meta">
+              <fa-icon [icon]="icons.location" />
+              {{ app.candidate.city }}
+              <span class="dot" aria-hidden="true"></span>
+              {{ app.candidate.completedJobs }} trabalhos concluídos
+            </p>
+          </div>
+          <div class="rating" [attr.aria-label]="'Avaliação ' + app.candidate.rating + ' de 5'">
+            @for (s of stars; track s) {
+              <fa-icon class="star" [class.is-full]="s <= app.candidate.rating + 0.25" [icon]="icons.star" />
+            }
+            <span>{{ app.candidate.rating.toFixed(1) }}</span>
+          </div>
+        </header>
+
+        <section class="section">
+          <h3 class="section__title">Sobre o candidato</h3>
+          <p class="section__text">{{ app.candidate.bio }}</p>
+
+          <h4 class="section__subtitle">Experiência e qualificações</h4>
+          <ul class="checklist">
+            @for (skill of app.candidate.skills; track $index) {
+              <li>
+                <span class="check" aria-hidden="true"><fa-icon [icon]="icons.check" /></span>
+                {{ skill }}
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Vaga -->
+        <section class="job" aria-labelledby="job-title">
+          <div class="job__head">
+            <h3 id="job-title" class="section__title">Vaga: {{ app.job.role }}</h3>
+            <span class="tag tag--muted">{{ app.job.category }}</span>
+          </div>
+
+          <ul class="meta">
+            <li>
+              <span class="meta__icon"><fa-icon [icon]="icons.calendar" /></span>
+              <span>
+                <small>Data</small>
+                <span class="capitalize">{{ app.dateLabel }}</span>
+              </span>
+            </li>
+            <li>
+              <span class="meta__icon"><fa-icon [icon]="icons.clock" /></span>
+              <span>
+                <small>Período</small>
+                {{ app.job.period }} · {{ app.job.start }} – {{ app.job.end }}
+              </span>
+            </li>
+            <li>
+              <span class="meta__icon"><fa-icon [icon]="icons.money" /></span>
+              <span>
+                <small>Valor</small>
+                {{ app.priceLabel }}
+              </span>
+            </li>
+          </ul>
+
+          <app-address [address]="app.job.address" />
+        </section>
+
+        <!-- Ações -->
+        <footer class="actions">
+          <a class="btn btn--ghost" routerLink="/gerenciar-vagas">Ver vaga</a>
+          @switch (app.status) {
+            @case ('review') {
+              <button type="button" class="btn btn--danger" (click)="decline(app.id)">
+                <fa-icon [icon]="icons.close" />
+                Recusar
+              </button>
+              <button type="button" class="btn btn--accent" (click)="confirm(app.id)">
+                <fa-icon [icon]="icons.check" />
+                Confirmar candidato
+              </button>
+            }
+            @case ('confirmed') {
+              <button type="button" class="btn btn--danger" (click)="decline(app.id)">
+                Cancelar contratação
+              </button>
+              <a class="btn btn--accent" routerLink="/chat">
+                <fa-icon [icon]="icons.chat" />
+                Falar com o candidato
+              </a>
+            }
+            @case ('canceled') {
+              <button type="button" class="btn btn--outline" (click)="reconsider(app.id)">
+                <fa-icon [icon]="icons.reopen" />
+                Reconsiderar candidatura
+              </button>
+            }
+          }
+        </footer>
+      </article>
+    </div>
+  } @else {
+    <div class="empty">
+      <span class="empty__icon"><fa-icon [icon]="icons.empty" /></span>
+      <h3>Nenhuma solicitação aqui</h3>
+      <p>Quando freelancers se candidatarem às suas vagas, eles aparecerão nesta lista.</p>
+      <a routerLink="/gerenciar-vagas" class="btn btn--outline">Gerenciar vagas</a>
+    </div>
+  }
+</main>
+
+<app-footer />

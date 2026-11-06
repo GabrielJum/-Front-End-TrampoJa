@@ -10,21 +10,12 @@
   <app-navigation-tabs />
 
   <!-- ============ FILTRO DE STATUS ============ -->
-  <div class="chips" role="group" aria-label="Filtrar por status">
-    @for (f of filters(); track f.id) {
-      <button
-        type="button"
-        class="chip"
-        [class]="'chip--' + f.id"
-        [class.is-active]="filter() === f.id"
-        [attr.aria-pressed]="filter() === f.id"
-        (click)="setFilter(f.id)"
-      >
-        {{ f.label }}
-        <span class="chip__count">{{ f.count }}</span>
-      </button>
-    }
-  </div>
+  <app-filter-chips
+    label="Filtrar por status"
+    [options]="filters()"
+    [value]="filter()"
+    (valueChange)="setFilter($event)"
+  />
 
   @if (selected(); as req) {
     <div class="layout">
@@ -53,32 +44,12 @@
       <!-- ============ DETALHE ============ -->
       <article class="detail" aria-labelledby="detail-title">
         <!-- Status -->
-        <div class="banner" [class]="'banner--' + req.status">
-          <span class="banner__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              @switch (req.status) {
-                @case ('confirmed') { <path d="M20 6 9 17l-5-5" /> }
-                @case ('review') { <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /> }
-                @case ('canceled') { <path d="M18 6 6 18M6 6l12 12" /> }
-              }
-            </svg>
-          </span>
-          <div>
-            <p class="banner__label">Status: <strong>{{ req.statusLabel }}</strong></p>
-            <p class="banner__text">{{ req.statusMessage }}</p>
-          </div>
-        </div>
-
-        <ol class="steps" [class.is-canceled]="req.status === 'canceled'" aria-label="Andamento">
-          @for (step of req.steps; track $index) {
-            <li class="step" [class.is-done]="step.done">
-              <span class="step__dot" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
-              </span>
-              {{ step.label }}
-            </li>
-          }
-        </ol>
+        <app-status-vacancy
+          [status]="req.status"
+          [label]="req.statusLabel"
+          [message]="req.statusMessage"
+          [steps]="req.steps"
+        />
 
         <!-- Vaga -->
         <header class="job">
@@ -163,19 +134,7 @@
           </ul>
         </section>
 
-        <a class="address" [href]="req.mapUrl" target="_blank" rel="noopener">
-          <span class="address__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-          </span>
-          <span class="address__body">
-            <small>Localização</small>
-            {{ req.address }}
-          </span>
-          <svg class="address__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
-        </a>
+        <app-address [address]="req.address" />
 
         <!-- Ações -->
         <footer class="actions">

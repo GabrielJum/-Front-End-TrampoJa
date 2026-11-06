@@ -24,7 +24,6 @@ ul {
   text-transform: capitalize;
 }
 
-.chip:focus-visible,
 .item:focus-visible,
 .star-btn:focus-visible,
 textarea:focus-visible {
@@ -52,55 +51,8 @@ textarea:focus-visible {
 }
 
 /* ---------- Filtro ---------- */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+app-filter-chips {
   margin-bottom: 24px;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
-}
-
-.chip:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.chip.is-active {
-  border-color: var(--primary);
-  background: var(--primary-50);
-  color: var(--primary);
-}
-
-.chip__count {
-  display: grid;
-  place-items: center;
-  min-width: 22px;
-  height: 22px;
-  padding-inline: 6px;
-  border-radius: 999px;
-  background: var(--bg);
-  font-size: 0.75rem;
-  box-sizing: border-box;
-}
-
-.chip.is-active .chip__count {
-  background: var(--primary);
-  color: #fff;
 }
 
 /* ---------- Layout ---------- */

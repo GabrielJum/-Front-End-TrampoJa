@@ -102,22 +102,7 @@
           </ul>
         </section>
 
-        <section class="card location" aria-labelledby="location-title">
-          <span class="location__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-          </span>
-          <div class="location__body">
-            <h3 id="location-title" class="card__title">Localização</h3>
-            <p class="card__text">{{ job.address }}</p>
-          </div>
-          <a class="btn btn--outline location__cta" [href]="job.mapUrl" target="_blank" rel="noopener">
-            Ver no mapa
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
-          </a>
-        </section>
+        <app-address [address]="job.address" />
       </div>
 
       <!-- ============ CANDIDATURA ============ -->

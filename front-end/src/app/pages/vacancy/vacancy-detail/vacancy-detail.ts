@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { Header } from '../../../components/header/header';
 import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
+import { Address } from '../../../components/address/address';
 import { Footer } from '../../../components/footer/footer';
 
 interface JobDetail {
@@ -50,7 +51,7 @@ const JOBS: JobDetail[] = [
 
 @Component({
   selector: 'app-vacancy-detail',
-  imports: [RouterLink, Header, NavigationTabs, Footer],
+  imports: [RouterLink, Header, NavigationTabs, Footer, Address],
   templateUrl: './vacancy-detail.html',
   styleUrl: './vacancy-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,7 +91,6 @@ export class VacancyDetail {
         .join('')
         .toUpperCase(),
       city: job.address.split(' - ').at(-1),
-      mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.address)}`,
     };
   });
 

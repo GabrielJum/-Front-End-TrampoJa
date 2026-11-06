@@ -1,0 +1,8 @@
+<a class="address" [href]="mapUrl()" target="_blank" rel="noopener">
+  <span class="address__icon" aria-hidden="true"><fa-icon [icon]="icons.location" /></span>
+  <span class="address__body">
+    <small>{{ label() }}</small>
+    {{ address() }}
+  </span>
+  <fa-icon class="address__arrow" [icon]="icons.external" />
+</a>
