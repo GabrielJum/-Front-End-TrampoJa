@@ -20,6 +20,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
+import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
 
 type JobStatus = 'open' | 'closed';
 type StatusFilter = 'all' | JobStatus;
@@ -115,7 +116,7 @@ const SEED: CompanyJob[] = [
 
 @Component({
   selector: 'app-vacancy-manage',
-  imports: [ReactiveFormsModule, Header, Footer, FontAwesomeModule],
+  imports: [ReactiveFormsModule, Header, Footer, FontAwesomeModule, NavigationTabs],
   templateUrl: './vacancy-manage.html',
   styleUrl: './vacancy-manage.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
