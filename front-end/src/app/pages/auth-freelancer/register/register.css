@@ -76,63 +76,44 @@ ul {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
 }
-
 /* ---------- Cartão ---------- */
 .card {
-  padding: 32px;
+  padding: 36px 32px 32px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-lg);
 }
 
-.segmented {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 5px;
-  border-radius: 999px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  margin-bottom: 1rem;
+.card__head {
+  margin-bottom: 28px;
+  text-align: center;
 }
 
-.segmented__thumb {
-  position: absolute;
-  inset: 5px auto 5px 5px;
-  width: calc(50% - 5px);
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: var(--shadow-sm), 0 2px 8px -2px rgb(24 53 90 / 0.12);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.card__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.3rem;
+  box-shadow: var(--shadow);
 }
 
-.segmented__thumb.is-right {
-  transform: translateX(100%);
-}
-
-.segmented__btn {
-  position: relative;
-  z-index: 1;
-  padding: 10px 16px;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.92rem;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 999px;
-  transition: color 0.2s;
-}
-
-.segmented__btn.is-active {
+.card__title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--primary);
 }
 
-.segmented__btn:focus-visible {
-  outline: 3px solid rgb(232 116 37 / 0.4);
-  outline-offset: 1px;
+.card__subtitle {
+  margin-top: 6px;
+  font-size: 0.92rem;
+  color: var(--muted);
 }
 
 /* ---------- Alertas ---------- */
@@ -441,6 +422,11 @@ ul {
   text-align: center;
   font-size: 0.9rem;
   color: var(--muted);
+}
+
+.switch--muted {
+  margin-top: 10px;
+  font-size: 0.85rem;
 }
 
 /* ---------- Animações ---------- */
