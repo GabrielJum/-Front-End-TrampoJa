@@ -152,13 +152,15 @@ export class Register {
       return;
     }
 
-    const { name, email, cnpj } = this.form.getRawValue();
+    const { name, email, cnpj, password } = this.form.getRawValue();
 
     const empresa: Enterprise = {
       nome: name,
       cnpj: cnpj,
       razaoSocial: name,
       endereco: '',
+      email: email,
+      senha: password
     }
 
     this.loading.set(true)
@@ -166,6 +168,7 @@ export class Register {
     this.enterpriseService.cadastrar(empresa).subscribe({
       next: (resposta) => {
         console.log('Usuário cadastrado com sucesso!');
+        this.router.navigate(['/empresa/login'])
       },
 
       error: (erro) => {
@@ -173,6 +176,7 @@ export class Register {
       }
     });
 
+    this.loading.set(false)
   }
 
 }

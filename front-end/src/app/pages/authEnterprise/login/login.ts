@@ -16,6 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from '../../../components/footer/footer';
 import { Header } from '../../../components/header/header';
+import { EnterpriseService } from '../../../service/enterprise/enterprise';
 
 interface Empresa {
   name: string;
@@ -57,6 +58,10 @@ export class Login {
   protected readonly loading = signal(false);
   protected readonly feedback = signal<Feedback>(null);
 
+  constructor(
+    private enterpriseService: EnterpriseService
+  ) { }
+
   protected readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
@@ -88,22 +93,24 @@ export class Login {
     }
 
     const { email, password } = this.form.getRawValue();
+
     this.loading.set(true);
-    // Simula a latência da API enquanto a autenticação usa o localStorage
-    setTimeout(() => {
-      const empresa = this.getEmpresas().find(
-        (e) => e.email.toLowerCase() === email.toLowerCase() && e.password === password,
-      );
-      this.loading.set(false);
 
-      if (!empresa) {
-        this.feedback.set({ type: 'error', message: 'E-mail ou senha inválidos.' });
-        return;
+    this.enterpriseService.login(email, password).subscribe({
+      next: (empresa) => {
+        this.loading.set(false);
+        localStorage.setItem(SESSION_KEY, JSON.stringify(empresa));
+        this.router.navigate(['/gerenciar-vagas']);
+      },
+
+      error: (erro) => {
+        this.loading.set(false);
+        this.feedback.set({
+          type: 'error',
+          message: 'Falha ao efetuar login. Verifique suas credenciais.',
+        });
       }
-
-      localStorage.setItem(SESSION_KEY, JSON.stringify(empresa));
-      this.router.navigate(['/empresas']);
-    }, 500);
+    })
   }
 
   private getEmpresas(): Empresa[] {
