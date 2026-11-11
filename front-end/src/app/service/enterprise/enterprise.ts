@@ -18,8 +18,15 @@ export class EnterpriseService {
 
   cadastrar(empresa: Enterprise): Observable<Enterprise> {
     return this.http.post<Enterprise>(
-      this.apiUrl,
+      `${this.apiUrl}/register`,
       empresa
+    );
+  }
+
+  login(email: string, senha: string): Observable<Enterprise> {
+    return this.http.post<Enterprise>(
+      `${this.apiUrl}/login`,
+      { email, senha }
     );
   }
 }

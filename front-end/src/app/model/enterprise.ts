@@ -4,5 +4,6 @@ export interface Enterprise {
   cnpj: string;
   razaoSocial: string;
   endereco: string
-
+  email: string;
+  senha: string;
 }
