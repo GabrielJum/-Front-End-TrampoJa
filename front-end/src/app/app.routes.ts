@@ -2,9 +2,19 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
-        path: 'auth',
+        path: 'freelancers/login',
         loadComponent: () =>
-            import('./pages/auth/auth').then(m => m.Auth)
+            import('./pages/auth-freelancer/login/login').then(m => m.Login)
+    },
+    {
+        path: 'freelancers/cadastro',
+        loadComponent: () =>
+            import('./pages/auth-freelancer/register/register').then(m => m.Register)
+    },
+    {
+        path: 'auth',
+        redirectTo: 'freelancers/login',
+        pathMatch: 'full'
     },
     {
         path: '',
