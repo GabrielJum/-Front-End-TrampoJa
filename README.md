@@ -28,8 +28,6 @@ Entre as tecnologias usadas estão sendo utilizados:
 • NodeJS
 • Apache Maven
 
-
-Instruções claras de como clonar e executar o projeto localmente.
 Para realizar a clonagem do projeto e executá-lo
 será necessário o uso de algumas tecnologias e instalação, dentre elas 
 será necessário a instalação do Java, NodeJS, Editor de código fonte (como o VsCode),
@@ -45,3 +43,7 @@ o back-end
 
 para rodar a aplicação do front-end é necessário usar o comando no terminal
 inicialmente do npm install e após usar o comando ng serve
+
+
+Links das aplicações publicadas em deploy:
+https://front-end-trampo-ja.vercel.app/   
