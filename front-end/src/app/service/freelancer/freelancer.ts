@@ -25,7 +25,7 @@ export class FreelancerService {
 
   login(email: string, senha: string): Observable<Freelancer> {
     return this.http.post<Freelancer>(
-      `${this.apiUrl}/login`,
+      `http://localhost:8080/freelancer/login`,
       { email, senha }
     );
   }

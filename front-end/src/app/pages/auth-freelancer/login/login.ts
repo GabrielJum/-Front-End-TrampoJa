@@ -1,3 +1,4 @@
+import { FreelancerService } from './../../../service/freelancer/freelancer';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -6,12 +7,6 @@ import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faEye, faEyeSlash, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from '../../../components/footer/footer';
 import { Header } from '../../../components/header/header';
-
-interface Usuario {
-  name: string;
-  email: string;
-  password: string;
-}
 
 type Feedback = { type: 'error' | 'success' | 'info'; message: string } | null;
 
@@ -42,17 +37,13 @@ export class Login {
   protected readonly loading = signal(false);
   protected readonly feedback = signal<Feedback>(null);
 
+  constructor(private freelancerService: FreelancerService) {}
+
   protected readonly form = this.fb.group({
-    email: [this.emailFromNavigation(), [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
     remember: [true],
   });
-
-  constructor() {
-    if (this.form.controls.email.value) {
-      this.feedback.set({ type: 'success', message: 'Conta criada! Agora é só entrar com sua senha.' });
-    }
-  }
 
   protected togglePassword(): void {
     this.showPassword.update((v) => !v);
@@ -83,38 +74,28 @@ export class Login {
     }
 
     const { email, password } = this.form.getRawValue();
-    this.withLoading(() => {
-      const usuario = this.getUsuarios().find(
-        (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password,
-      );
 
-      if (!usuario) {
-        this.feedback.set({ type: 'error', message: 'E-mail ou senha inválidos.' });
-        return;
+    this.withLoading( () => {
+      this.freelancerService.login(email, password).subscribe({
+      next: (freelancer) => {
+        localStorage.setItem(SESSION_KEY, JSON.stringify(freelancer));
+        this.router.navigate(['/vagas']);
+      },
+
+      error: (err) => {
+        this.feedback.set({ type: 'error', message: 'Email ou senha inválidos.' });
       }
-
-      localStorage.setItem(SESSION_KEY, JSON.stringify(usuario));
-      this.router.navigate(['/home']);
     });
-  }
+    })
 
-  /** E-mail enviado pelo cadastro via `router.navigate(..., { state: { email } })`. */
-  private emailFromNavigation(): string {
-    const state = inject(Router).getCurrentNavigation()?.extras.state as { email?: string } | undefined;
-    return state?.email ?? '';
   }
 
   private withLoading(action: () => void): void {
     this.loading.set(true);
-    // Simula a latência da API enquanto a autenticação usa o localStorage
+
     setTimeout(() => {
       action();
       this.loading.set(false);
     }, 500);
-  }
-
-  private getUsuarios(): Usuario[] {
-    const dados = localStorage.getItem(USERS_KEY);
-    return dados ? JSON.parse(dados) : [];
   }
 }

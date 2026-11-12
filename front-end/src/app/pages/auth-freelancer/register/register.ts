@@ -111,19 +111,29 @@ export class Register {
       endereco: '',
       valorHora: 0,
     }
-    
-    this.freelancerService.cadastrar(freelancer).subscribe({
-      next: (resposta) => {
-        console.log('Usuário cadastrado com sucesso!');
-        this.router.navigate(['/freelancers/login']);
-      },
 
-      error: (erro) => {
-        console.error('Erro ao cadastrar usuário:', erro);
-      }
+    this.withLoading(()=> {
+      this.freelancerService.cadastrar(freelancer).subscribe({
+        next: (resposta) => {
+          console.log('Usuário cadastrado com sucesso!');
+          this.router.navigate(['/freelancers/login']);
+        },
 
+        error: (erro) => {
+          console.error('Erro ao cadastrar usuário:', erro);
+        }
+
+      })
     })
+  }
 
+  private withLoading(action: () => void): void {
+    this.loading.set(true);
+
+    setTimeout(() => {
+      action();
+      this.loading.set(false);
+    }, 500);
   }
 
 }
