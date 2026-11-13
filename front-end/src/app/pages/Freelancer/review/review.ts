@@ -15,10 +15,10 @@ import {
   faQuoteLeft,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
-import { FilterChips } from '../../components/filter-chips/filter-chips';
-import { Footer } from '../../components/footer/footer';
-import { Header } from '../../components/header/header';
-import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
+import { FilterChips } from '../../../components/filter-chips/filter-chips';
+import { Footer } from '../../../components/footer/footer';
+import { Header } from '../../../components/header/header';
+import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
 
 type CriterionId = 'location' | 'commitment' | 'environment';
 type ReviewFilter = 'all' | 'pending' | 'done';

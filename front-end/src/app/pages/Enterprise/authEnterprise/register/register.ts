@@ -1,4 +1,4 @@
-import { EnterpriseService } from './../../../service/enterprise/enterprise';
+import { EnterpriseService } from '../../../../service/enterprise/enterprise';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
@@ -23,9 +23,9 @@ import {
   faLock,
   faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer } from '../../../components/footer/footer';
-import { Header } from '../../../components/header/header';
-import { Enterprise } from '../../../model/enterprise';
+import { Footer } from '../../../../components/footer/footer';
+import { Header } from '../../../../components/header/header';
+import { Enterprise } from '../../../../model/enterprise';
 
 interface Empresa {
   name: string;

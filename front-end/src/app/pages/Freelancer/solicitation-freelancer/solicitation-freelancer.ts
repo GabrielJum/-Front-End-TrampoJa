@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Header } from '../../components/header/header';
-import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
-import { FilterChips } from '../../components/filter-chips/filter-chips';
-import { Address } from '../../components/address/address';
-import { Footer } from '../../components/footer/footer';
-import { StatusVacancy, VacancyStatus } from '../../components/status-vacancy/status-vacancy';
+import { Header } from '../../../components/header/header';
+import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
+import { FilterChips } from '../../../components/filter-chips/filter-chips';
+import { Address } from '../../../components/address/address';
+import { Footer } from '../../../components/footer/footer';
+import { StatusVacancy, VacancyStatus } from '../../../components/status-vacancy/status-vacancy';
 
 type Status = VacancyStatus;
 type StatusFilter = 'all' | Status;

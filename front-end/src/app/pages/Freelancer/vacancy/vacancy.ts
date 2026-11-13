@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Header } from '../../components/header/header';
-import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
-import { Footer } from '../../components/footer/footer';
+import { Header } from '../../../components/header/header';
+import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
+import { Footer } from '../../../components/footer/footer';
 
 type TabId = 'search' | 'chat' | 'requests' | 'reviews' | 'profile';
 type DateFilter = 'any' | 'today' | 'week' | 'month';

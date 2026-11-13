@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
-import { Header } from '../../../components/header/header';
-import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
-import { Address } from '../../../components/address/address';
-import { Footer } from '../../../components/footer/footer';
+import { Header } from '../../../../components/header/header';
+import { NavigationTabs } from '../../../../components/navigation-tabs/navigation-tabs';
+import { Address } from '../../../../components/address/address';
+import { Footer } from '../../../../components/footer/footer';
 
 interface JobDetail {
   id: number;

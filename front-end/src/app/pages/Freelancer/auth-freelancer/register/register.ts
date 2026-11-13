@@ -1,4 +1,4 @@
-import { FreelancerService } from './../../../service/freelancer/freelancer';
+import { FreelancerService } from '../../../../service/freelancer/freelancer';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
@@ -18,9 +18,9 @@ import {
   faShieldHalved,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer } from '../../../components/footer/footer';
-import { Header } from '../../../components/header/header';
-import { Freelancer } from '../../../model/freelancer';
+import { Footer } from '../../../../components/footer/footer';
+import { Header } from '../../../../components/header/header';
+import { Freelancer } from '../../../../model/freelancer';
 
 type Feedback = { type: 'error' | 'success' | 'info'; message: string } | null;
 type Field = 'name' | 'email' | 'password' | 'confirmPassword' | 'terms';

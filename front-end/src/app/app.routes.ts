@@ -4,12 +4,12 @@ export const routes: Routes = [
     {
         path: 'freelancers/login',
         loadComponent: () =>
-            import('./pages/auth-freelancer/login/login').then(m => m.Login)
+            import('./pages/Freelancer/auth-freelancer/login/login').then(m => m.Login)
     },
     {
         path: 'freelancers/cadastro',
         loadComponent: () =>
-            import('./pages/auth-freelancer/register/register').then(m => m.Register)
+            import('./pages/Freelancer/auth-freelancer/register/register').then(m => m.Register)
     },
     {
         path: 'auth',
@@ -24,32 +24,32 @@ export const routes: Routes = [
     {
         path: 'empresas',
         loadComponent: () =>
-            import('./pages/enterprise/enterprise').then(m => m.Enterprise)
+            import('./pages/home-enterprise/enterprise').then(m => m.Enterprise)
     },
     {
         path: 'empresas/login',
         loadComponent: () =>
-            import('./pages/authEnterprise/login/login').then(m => m.Login)
+            import('./pages/Enterprise/authEnterprise/login/login').then(m => m.Login)
     },
     {
         path: 'empresas/cadastro',
         loadComponent: () =>
-            import('./pages/authEnterprise/register/register').then(m => m.Register)
+            import('./pages/Enterprise/authEnterprise/register/register').then(m => m.Register)
     },
     {
         path: 'gerenciar-vagas',
         loadComponent: () =>
-            import('./pages/vacancy-manage/vacancy-manage').then(m => m.VacancyManage)
+            import('./pages/Enterprise/vacancy-manage/vacancy-manage').then(m => m.VacancyManage)
     },
     {
         path: 'vagas',
         loadComponent: () =>
-            import('./pages/vacancy/vacancy').then(m => m.Vacancy)
+            import('./pages/Freelancer/vacancy/vacancy').then(m => m.Vacancy)
     },
     {
         path: 'vagas/:id',
         loadComponent: () =>
-            import('./pages/vacancy/vacancy-detail/vacancy-detail').then(m => m.VacancyDetail)
+            import('./pages/Freelancer/vacancy/vacancy-detail/vacancy-detail').then(m => m.VacancyDetail)
     },
     {
         path: 'chat',
@@ -59,12 +59,12 @@ export const routes: Routes = [
     {
         path: 'freelancer/solicitacoes',
         loadComponent: () =>
-            import('./pages/solicitation-freelancer/solicitation-freelancer').then(m => m.SolicitationFreelancer)
+            import('./pages/Freelancer/solicitation-freelancer/solicitation-freelancer').then(m => m.SolicitationFreelancer)
     },
     {
         path: 'empresa/solicitacoes',
         loadComponent: () =>
-            import('./pages/solicitation-enterprise/solicitation-enterprise').then(m => m.SolicitationEnterprise)
+            import('./pages/Enterprise/solicitation-enterprise/solicitation-enterprise').then(m => m.SolicitationEnterprise)
     },
     {
         path: 'perfil',
@@ -79,7 +79,7 @@ export const routes: Routes = [
     {
         path: 'avaliacoes',
         loadComponent: () =>
-            import('./pages/review/review').then(m => m.Review)
+            import('./pages/Freelancer/review/review').then(m => m.Review)
     },
 
 ];

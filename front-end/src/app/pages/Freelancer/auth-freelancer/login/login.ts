@@ -1,33 +1,17 @@
+import { FreelancerService } from '../../../../service/freelancer/freelancer';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {
-  faArrowRight,
-  faBuilding,
-  faCheck,
-  faCircleCheck,
-  faCircleExclamation,
-  faCircleInfo,
-  faEnvelope,
-  faEye,
-  faEyeSlash,
-  faLock,
-} from '@fortawesome/free-solid-svg-icons';
-import { Footer } from '../../../components/footer/footer';
-import { Header } from '../../../components/header/header';
-import { EnterpriseService } from '../../../service/enterprise/enterprise';
-
-interface Empresa {
-  name: string;
-  email: string;
-  password: string;
-}
+import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope, faEye, faEyeSlash, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { Footer } from '../../../../components/footer/footer';
+import { Header } from '../../../../components/header/header';
 
 type Feedback = { type: 'error' | 'success' | 'info'; message: string } | null;
 
-const COMPANIES_KEY = 'empresas';
-const SESSION_KEY = 'empresaLogada';
+const USERS_KEY = 'usuarios';
+const SESSION_KEY = 'usuarioLogado';
 
 @Component({
   selector: 'app-login',
@@ -37,18 +21,13 @@ const SESSION_KEY = 'empresaLogada';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
-  protected readonly icons = {
-    arrow: faArrowRight,
-    building: faBuilding,
-    check: faCheck,
-    envelope: faEnvelope,
-    eye: faEye,
-    eyeSlash: faEyeSlash,
-    lock: faLock,
-    success: faCircleCheck,
-    error: faCircleExclamation,
-    info: faCircleInfo,
-  };
+  protected readonly faGoogle = faGoogle;
+  protected readonly faFacebook = faFacebook;
+  protected readonly faEye = faEye;
+  protected readonly faEyeSlash = faEyeSlash;
+  protected readonly faEnvelope = faEnvelope;
+  protected readonly faLock = faLock;
+  protected readonly faUser = faUser;
 
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
@@ -58,9 +37,7 @@ export class Login {
   protected readonly loading = signal(false);
   protected readonly feedback = signal<Feedback>(null);
 
-  constructor(
-    private enterpriseService: EnterpriseService
-  ) { }
+  constructor(private freelancerService: FreelancerService) {}
 
   protected readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -84,6 +61,10 @@ export class Login {
     });
   }
 
+  protected socialLogin(provider: string): void {
+    this.feedback.set({ type: 'info', message: `O login com ${provider} estará disponível em breve.` });
+  }
+
   protected login(): void {
     this.submitted.set(true);
     this.feedback.set(null);
@@ -94,27 +75,27 @@ export class Login {
 
     const { email, password } = this.form.getRawValue();
 
-    this.loading.set(true);
-
-    this.enterpriseService.login(email, password).subscribe({
-      next: (empresa) => {
-        this.loading.set(false);
-        localStorage.setItem(SESSION_KEY, JSON.stringify(empresa));
-        this.router.navigate(['/gerenciar-vagas']);
+    this.withLoading( () => {
+      this.freelancerService.login(email, password).subscribe({
+      next: (freelancer) => {
+        localStorage.setItem(SESSION_KEY, JSON.stringify(freelancer));
+        this.router.navigate(['/vagas']);
       },
 
-      error: (erro) => {
-        this.loading.set(false);
-        this.feedback.set({
-          type: 'error',
-          message: 'Falha ao efetuar login. Verifique suas credenciais.',
-        });
+      error: (err) => {
+        this.feedback.set({ type: 'error', message: 'Email ou senha inválidos.' });
       }
+    });
     })
+
   }
 
-  private getEmpresas(): Empresa[] {
-    const dados = localStorage.getItem(COMPANIES_KEY);
-    return dados ? JSON.parse(dados) : [];
+  private withLoading(action: () => void): void {
+    this.loading.set(true);
+
+    setTimeout(() => {
+      action();
+      this.loading.set(false);
+    }, 500);
   }
 }
