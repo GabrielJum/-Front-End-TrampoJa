@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faBan,
@@ -16,40 +15,25 @@ import {
   faRotateLeft,
   faTriangleExclamation,
   faUsers,
-  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from '../../../components/footer/footer';
 import { Header } from '../../../components/header/header';
 import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
+import {
+  ModalCreateVacancy,
+  VacancyFormValue,
+} from '../../../components/modal-create-vacancy/modal-create-vacancy';
 
 type JobStatus = 'open' | 'closed';
 type StatusFilter = 'all' | JobStatus;
-type Period = 'Manhã' | 'Tarde' | 'Noite' | 'Madrugada';
-
-interface CompanyJob {
+interface CompanyJob extends VacancyFormValue {
   id: number;
-  role: string;
-  category: string;
-  location: string;
-  address: string;
-  date: string; // ISO yyyy-mm-dd
-  period: Period;
-  start: string; // HH:mm
-  end: string; // HH:mm
-  price: number;
-  summary: string;
-  requirements: string[];
   status: JobStatus;
   candidates: number;
 }
 
-type FormField = 'role' | 'category' | 'location' | 'address' | 'date' | 'start' | 'end' | 'price' | 'summary';
-
 const STORAGE_KEY = 'vagasEmpresa';
 const SESSION_KEY = 'empresaLogada';
-
-const CATEGORIES = ['Segurança', 'Eventos', 'Motoboy', 'Obras', 'Food truck', 'Restaurante'];
-const PERIODS: Period[] = ['Manhã', 'Tarde', 'Noite', 'Madrugada'];
 
 function daysFromToday(days: number): string {
   const d = new Date();
@@ -116,7 +100,7 @@ const SEED: CompanyJob[] = [
 
 @Component({
   selector: 'app-vacancy-manage',
-  imports: [ReactiveFormsModule, Header, Footer, FontAwesomeModule, NavigationTabs],
+  imports: [Header, Footer, FontAwesomeModule, NavigationTabs, ModalCreateVacancy],
   templateUrl: './vacancy-manage.html',
   styleUrl: './vacancy-manage.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -138,10 +122,8 @@ export class VacancyManage {
     reopen: faRotateLeft,
     warning: faTriangleExclamation,
     users: faUsers,
-    close: faXmark,
   };
 
-  private readonly fb = inject(NonNullableFormBuilder);
   private readonly currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
   private readonly dateFmt = new Intl.DateTimeFormat('pt-BR', {
     weekday: 'short',
@@ -149,10 +131,6 @@ export class VacancyManage {
     month: 'short',
   });
 
-  protected readonly categories = CATEGORIES;
-  protected readonly periods = PERIODS;
-  protected readonly today = daysFromToday(0);
-  protected readonly companyName = this.getCompanyName();
 
   private readonly jobs = signal<CompanyJob[]>(this.loadJobs());
 
@@ -160,26 +138,11 @@ export class VacancyManage {
   protected readonly search = signal('');
   protected readonly expandedId = signal<number | null>(null);
 
-  protected readonly editingId = signal<number | null>(null);
+  protected readonly editingJob = signal<CompanyJob | null>(null);
   protected readonly formOpen = signal(false);
-  protected readonly submitted = signal(false);
   protected readonly closingJob = signal<CompanyJob | null>(null);
   protected readonly toast = signal<string | null>(null);
   private toastTimer?: ReturnType<typeof setTimeout>;
-
-  protected readonly form = this.fb.group({
-    role: ['', [Validators.required, Validators.minLength(3)]],
-    category: [CATEGORIES[0], Validators.required],
-    location: ['', Validators.required],
-    address: ['', Validators.required],
-    date: ['', Validators.required],
-    period: [PERIODS[0] as Period, Validators.required],
-    start: ['', Validators.required],
-    end: ['', Validators.required],
-    price: [0, [Validators.required, Validators.min(1)]],
-    summary: ['', [Validators.required, Validators.minLength(10)]],
-    requirements: [''],
-  });
 
   protected readonly stats = computed(() => {
     const jobs = this.jobs();
@@ -236,51 +199,25 @@ export class VacancyManage {
     this.expandedId.update((current) => (current === id ? null : id));
   }
 
-  protected showError(control: FormField): boolean {
-    const c = this.form.controls[control];
-    return c.invalid && (c.touched || this.submitted());
-  }
-
   // ---------- Criar / editar ----------
   protected openCreate(): void {
-    this.editingId.set(null);
-    this.submitted.set(false);
-    this.form.reset();
+    this.editingJob.set(null);
     this.formOpen.set(true);
   }
 
   protected openEdit(job: CompanyJob): void {
-    this.editingId.set(job.id);
-    this.submitted.set(false);
-    this.form.reset({ ...job, requirements: job.requirements.join('\n') });
+    this.editingJob.set(job);
     this.formOpen.set(true);
   }
 
-  protected save(): void {
-    this.submitted.set(true);
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const { requirements, ...values } = this.form.getRawValue();
-    const data = {
-      ...values,
-      role: values.role.trim(),
-      price: Number(values.price),
-      requirements: requirements
-        .split('\n')
-        .map((r) => r.trim())
-        .filter(Boolean),
-    };
-
-    const id = this.editingId();
-    if (id === null) {
+  protected save(data: VacancyFormValue): void {
+    const editing = this.editingJob();
+    if (editing === null) {
       const nextId = Math.max(0, ...this.jobs().map((j) => j.id)) + 1;
       this.jobs.update((jobs) => [{ ...data, id: nextId, status: 'open', candidates: 0 }, ...jobs]);
       this.showToast('Vaga publicada com sucesso!');
     } else {
-      this.jobs.update((jobs) => jobs.map((j) => (j.id === id ? { ...j, ...data } : j)));
+      this.jobs.update((jobs) => jobs.map((j) => (j.id === editing.id ? { ...j, ...data } : j)));
       this.showToast('Vaga atualizada.');
     }
 
@@ -325,10 +262,7 @@ export class VacancyManage {
     return dados ? JSON.parse(dados) : SEED;
   }
 
-  private getCompanyName(): string {
-    const dados = localStorage.getItem(SESSION_KEY);
-    return dados ? JSON.parse(dados).name : 'Sua empresa';
-  }
+
 }
 
 function durationInHours(start: string, end: string): number {

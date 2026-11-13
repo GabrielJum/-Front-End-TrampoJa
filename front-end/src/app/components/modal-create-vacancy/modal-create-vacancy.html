@@ -1,0 +1,155 @@
+<div class="overlay" (click)="onClose()">
+  <section
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="form-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="modal__head">
+      <div>
+        <h2 id="form-title" class="modal__title">
+          {{ isEditing() ? 'Editar vaga' : 'Nova vaga' }}
+        </h2>
+        <p class="modal__subtitle">Preencha as informações que os freelancers vão ver.</p>
+      </div>
+      <button type="button" class="icon-btn" aria-label="Fechar" (click)="onClose()">
+        <fa-icon [icon]="closeIcon" />
+      </button>
+    </header>
+
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form__grid">
+        <label class="field field--wide">
+          <span class="field__label">Função</span>
+          <input
+            type="text"
+            formControlName="role"
+            placeholder="Ex.: Garçom, Segurança, Entregador"
+            [class.is-invalid]="showError('role')"
+          />
+          @if (showError('role')) {
+            <span class="field__error">Informe a função (mínimo 3 caracteres).</span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field__label">Categoria</span>
+          <select formControlName="category">
+            @for (cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Valor da diária (R$)</span>
+          <input
+            type="number"
+            min="1"
+            step="0.01"
+            formControlName="price"
+            placeholder="150"
+            [class.is-invalid]="showError('price')"
+          />
+          @if (showError('price')) {
+            <span class="field__error">Informe um valor maior que zero.</span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field__label">Data</span>
+          <input
+            type="date"
+            formControlName="date"
+            [min]="isEditing() ? null : today"
+            [class.is-invalid]="showError('date')"
+          />
+          @if (showError('date')) {
+            <span class="field__error">Informe a data.</span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field__label">Período</span>
+          <select formControlName="period">
+            @for (p of periods; track p) {
+              <option [value]="p">{{ p }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Início</span>
+          <input type="time" formControlName="start" [class.is-invalid]="showError('start')" />
+          @if (showError('start')) {
+            <span class="field__error">Informe o horário de início.</span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field__label">Término</span>
+          <input type="time" formControlName="end" [class.is-invalid]="showError('end')" />
+          @if (showError('end')) {
+            <span class="field__error">Informe o horário de término.</span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field__label">Cidade</span>
+          <input
+            type="text"
+            formControlName="location"
+            placeholder="Ex.: Mogi das Cruzes"
+            [class.is-invalid]="showError('location')"
+          />
+          @if (showError('location')) {
+            <span class="field__error">Informe a cidade.</span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field__label">Endereço completo</span>
+          <input
+            type="text"
+            formControlName="address"
+            placeholder="Rua, número - Bairro - Cidade/UF"
+            [class.is-invalid]="showError('address')"
+          />
+          @if (showError('address')) {
+            <span class="field__error">Informe o endereço.</span>
+          }
+        </label>
+
+        <label class="field field--wide">
+          <span class="field__label">Sobre a vaga</span>
+          <textarea
+            rows="3"
+            formControlName="summary"
+            placeholder="Descreva as atividades e o contexto do trabalho"
+            [class.is-invalid]="showError('summary')"
+          ></textarea>
+          @if (showError('summary')) {
+            <span class="field__error">Descreva a vaga (mínimo 10 caracteres).</span>
+          }
+        </label>
+
+        <label class="field field--wide">
+          <span class="field__label">Requisitos <small>(um por linha, opcional)</small></span>
+          <textarea
+            rows="3"
+            formControlName="requirements"
+            placeholder="Ex.: Experiência com atendimento&#10;Traje social preto"
+          ></textarea>
+        </label>
+      </div>
+
+      <footer class="modal__actions">
+        <button type="button" class="btn btn--outline" (click)="onClose()">Cancelar</button>
+        <button type="submit" class="btn btn--accent">
+          {{ isEditing() ? 'Salvar alterações' : 'Publicar vaga' }}
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>
