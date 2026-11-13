@@ -18,9 +18,9 @@ import {
   faUsers,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer } from '../../components/footer/footer';
-import { Header } from '../../components/header/header';
-import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
+import { Footer } from '../../../components/footer/footer';
+import { Header } from '../../../components/header/header';
+import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
 
 type JobStatus = 'open' | 'closed';
 type StatusFilter = 'all' | JobStatus;

@@ -14,12 +14,12 @@ import {
   faStar,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { FilterChips } from '../../components/filter-chips/filter-chips';
-import { Address } from '../../components/address/address';
-import { Footer } from '../../components/footer/footer';
-import { Header } from '../../components/header/header';
-import { NavigationTabs } from '../../components/navigation-tabs/navigation-tabs';
-import { StatusVacancy, VacancyStatus } from '../../components/status-vacancy/status-vacancy';
+import { FilterChips } from '../../../components/filter-chips/filter-chips';
+import { Address } from '../../../components/address/address';
+import { Footer } from '../../../components/footer/footer';
+import { Header } from '../../../components/header/header';
+import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
+import { StatusVacancy, VacancyStatus } from '../../../components/status-vacancy/status-vacancy';
 
 type Status = VacancyStatus;
 type StatusFilter = 'all' | Status;
