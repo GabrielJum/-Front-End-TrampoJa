@@ -109,26 +109,13 @@
 
 <!-- ============ MODAL: EXCLUIR ============ -->
 @if (deletingVaga(); as vaga) {
-  <div class="overlay" (click)="closeDialogs()">
-    <section
-      class="modal modal--sm"
-      role="alertdialog"
-      aria-modal="true"
-      aria-labelledby="delete-title"
-      aria-describedby="delete-text"
-      (click)="$event.stopPropagation()"
-    >
-      <span class="modal__alert-icon"><fa-icon [icon]="icons.warning" /></span>
-      <h2 id="delete-title" class="modal__title">Excluir vaga de {{ vaga.titulo }}?</h2>
-      <p id="delete-text" class="modal__subtitle">Essa ação não pode ser desfeita.</p>
-      <footer class="modal__actions">
-        <button type="button" class="btn btn--outline" (click)="closeDialogs()">Cancelar</button>
-        <button type="button" class="btn btn--danger-solid" (click)="confirmDelete()">
-          Excluir vaga
-        </button>
-      </footer>
-    </section>
-  </div>
+  <app-modal-alert
+    [title]="'Excluir vaga de ' + vaga.titulo + '?'"
+    message="Essa ação não pode ser desfeita."
+    confirmLabel="Excluir vaga"
+    (confirm)="confirmDelete()"
+    (close)="closeDialogs()"
+  />
 }
 
 @if (toast(); as message) {

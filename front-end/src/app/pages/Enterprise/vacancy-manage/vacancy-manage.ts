@@ -10,7 +10,6 @@ import {
   faPen,
   faPlus,
   faTrash,
-  faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from '../../../components/footer/footer';
 import { Header } from '../../../components/header/header';
@@ -20,6 +19,7 @@ import {
   Period,
   VacancyFormValue,
 } from '../../../components/modal-create-vacancy/modal-create-vacancy';
+import { ModalAlert } from '../../../components/modal-alert/modal-alert';
 import { VacancyService } from '../../../service/vacancy/vacancy';
 import { Turno, VacancyType } from '../../../model/vacancy';
 
@@ -40,7 +40,7 @@ const PERIODO_POR_TURNO: Record<Turno, Period> = {
 
 @Component({
   selector: 'app-vacancy-manage',
-  imports: [Header, Footer, FontAwesomeModule, NavigationTabs, ModalCreateVacancy],
+  imports: [Header, Footer, FontAwesomeModule, NavigationTabs, ModalCreateVacancy, ModalAlert],
   templateUrl: './vacancy-manage.html',
   styleUrl: './vacancy-manage.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,7 +60,6 @@ export class VacancyManage {
     pen: faPen,
     plus: faPlus,
     trash: faTrash,
-    warning: faTriangleExclamation,
   };
 
   protected readonly vagas = signal<VacancyType[]>([]);

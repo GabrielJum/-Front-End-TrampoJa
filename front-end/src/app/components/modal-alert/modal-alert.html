@@ -1,0 +1,22 @@
+<div class="overlay" (click)="onClose()">
+  <section
+    class="modal"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="alert-title"
+    aria-describedby="alert-text"
+    (click)="$event.stopPropagation()"
+  >
+    <span class="modal__alert-icon"><fa-icon [icon]="warningIcon" /></span>
+    <h2 id="alert-title" class="modal__title">{{ title() }}</h2>
+    @if (message()) {
+      <p id="alert-text" class="modal__subtitle">{{ message() }}</p>
+    }
+    <footer class="modal__actions">
+      <button type="button" class="btn btn--outline" (click)="onClose()">{{ cancelLabel() }}</button>
+      <button type="button" class="btn btn--danger-solid" (click)="onConfirm()">
+        {{ confirmLabel() }}
+      </button>
+    </footer>
+  </section>
+</div>
