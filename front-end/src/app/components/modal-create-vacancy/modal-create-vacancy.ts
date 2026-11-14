@@ -38,7 +38,7 @@ function todayIso(): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalCreateVacancy implements OnInit {
-  /** Vaga a ser editada. Quando `null`, o modal cria uma nova vaga. */
+
   readonly vacancy = input<VacancyFormValue | null>(null);
 
   readonly save = output<VacancyFormValue>();

@@ -1,102 +1,42 @@
-import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
-  faBan,
-  faBriefcase,
   faCalendarDays,
   faChevronDown,
   faCircleCheck,
   faClock,
   faFolderOpen,
   faLocationDot,
-  faMagnifyingGlass,
   faPen,
   faPlus,
-  faRotateLeft,
+  faTrash,
   faTriangleExclamation,
-  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from '../../../components/footer/footer';
 import { Header } from '../../../components/header/header';
 import { NavigationTabs } from '../../../components/navigation-tabs/navigation-tabs';
 import {
   ModalCreateVacancy,
+  Period,
   VacancyFormValue,
 } from '../../../components/modal-create-vacancy/modal-create-vacancy';
+import { VacancyService } from '../../../service/vacancy/vacancy';
+import { Turno, VacancyType } from '../../../model/vacancy';
 
-type JobStatus = 'open' | 'closed';
-type StatusFilter = 'all' | JobStatus;
-interface CompanyJob extends VacancyFormValue {
-  id: number;
-  status: JobStatus;
-  candidates: number;
-}
-
-const STORAGE_KEY = 'vagasEmpresa';
 const SESSION_KEY = 'empresaLogada';
 
-function daysFromToday(days: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
+const TURNO_POR_PERIODO: Record<Period, Turno> = {
+  Manhã: 'MANHA',
+  Tarde: 'TARDE',
+  Noite: 'NOITE',
+  Madrugada: 'NOITE',
+};
 
-// Mock até a integração com a API
-const SEED: CompanyJob[] = [
-  {
-    id: 1,
-    role: 'Garçom',
-    category: 'Restaurante',
-    location: 'Mogi das Cruzes',
-    address: 'Rua João Cardoso Pereira, 258 - Parque Monte Líbano - Mogi das Cruzes/SP',
-    date: daysFromToday(2),
-    period: 'Noite',
-    start: '19:00',
-    end: '23:00',
-    price: 150,
-    summary:
-      'Estamos selecionando profissionais para reforçar nossa equipe de salão em uma noite de alto movimento.',
-    requirements: [
-      'Pessoas ágeis, comunicativas e com foco no bom atendimento.',
-      'Experiência na função é um diferencial.',
-    ],
-    status: 'open',
-    candidates: 12,
-  },
-  {
-    id: 2,
-    role: 'Recepcionista',
-    category: 'Eventos',
-    location: 'Poá',
-    address: 'Av. Brasil, 1200 - Centro - Poá/SP',
-    date: daysFromToday(9),
-    period: 'Noite',
-    start: '18:00',
-    end: '00:00',
-    price: 130,
-    summary: 'Recepção de convidados em festa de casamento.',
-    requirements: ['Traje social preto.', 'Boa comunicação.'],
-    status: 'open',
-    candidates: 5,
-  },
-  {
-    id: 3,
-    role: 'Segurança',
-    category: 'Segurança',
-    location: 'Suzano',
-    address: 'Rua General Francisco Glicério, 450 - Centro - Suzano/SP',
-    date: daysFromToday(-6),
-    period: 'Manhã',
-    start: '06:00',
-    end: '13:00',
-    price: 100,
-    summary: 'Controle de acesso na portaria e ronda pelas áreas comuns.',
-    requirements: ['Curso de vigilante em dia.'],
-    status: 'closed',
-    candidates: 8,
-  },
-];
+const PERIODO_POR_TURNO: Record<Turno, Period> = {
+  MANHA: 'Manhã',
+  TARDE: 'Tarde',
+  NOITE: 'Noite',
+};
 
 @Component({
   selector: 'app-vacancy-manage',
@@ -107,148 +47,109 @@ const SEED: CompanyJob[] = [
   host: { '(document:keydown.escape)': 'closeDialogs()' },
 })
 export class VacancyManage {
+  private readonly vacancyService = inject(VacancyService);
+  private readonly empresaId = getLoggedCompanyId();
+
   protected readonly icons = {
-    ban: faBan,
-    briefcase: faBriefcase,
     calendar: faCalendarDays,
     chevron: faChevronDown,
     check: faCircleCheck,
     clock: faClock,
     empty: faFolderOpen,
     location: faLocationDot,
-    search: faMagnifyingGlass,
     pen: faPen,
     plus: faPlus,
-    reopen: faRotateLeft,
+    trash: faTrash,
     warning: faTriangleExclamation,
-    users: faUsers,
   };
 
-  private readonly currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-  private readonly dateFmt = new Intl.DateTimeFormat('pt-BR', {
-    weekday: 'short',
-    day: '2-digit',
-    month: 'short',
-  });
-
-
-  private readonly jobs = signal<CompanyJob[]>(this.loadJobs());
-
-  protected readonly statusFilter = signal<StatusFilter>('all');
-  protected readonly search = signal('');
+  protected readonly vagas = signal<VacancyType[]>([]);
   protected readonly expandedId = signal<number | null>(null);
 
-  protected readonly editingJob = signal<CompanyJob | null>(null);
   protected readonly formOpen = signal(false);
-  protected readonly closingJob = signal<CompanyJob | null>(null);
+  protected readonly editingVaga = signal<VacancyType | null>(null);
+  protected readonly editingForm = signal<VacancyFormValue | null>(null);
+  protected readonly deletingVaga = signal<VacancyType | null>(null);
+
   protected readonly toast = signal<string | null>(null);
   private toastTimer?: ReturnType<typeof setTimeout>;
 
-  protected readonly stats = computed(() => {
-    const jobs = this.jobs();
-    const open = jobs.filter((j) => j.status === 'open');
-    return {
-      total: jobs.length,
-      open: open.length,
-      closed: jobs.length - open.length,
-      candidates: open.reduce((sum, j) => sum + j.candidates, 0),
-    };
-  });
-
-  protected readonly filters = computed(() => {
-    const s = this.stats();
-    return [
-      { id: 'all' as const, label: 'Todas', count: s.total },
-      { id: 'open' as const, label: 'Abertas', count: s.open },
-      { id: 'closed' as const, label: 'Encerradas', count: s.closed },
-    ];
-  });
-
-  protected readonly visibleJobs = computed(() => {
-    const status = this.statusFilter();
-    const term = this.search().trim().toLowerCase();
-
-    return this.jobs()
-      .filter(
-        (job) =>
-          (status === 'all' || job.status === status) &&
-          (!term || `${job.role} ${job.category} ${job.location}`.toLowerCase().includes(term)),
-      )
-      .sort((a, b) => (a.status === b.status ? a.date.localeCompare(b.date) : a.status === 'open' ? -1 : 1))
-      .map((job) => ({
-        ...job,
-        priceLabel: this.currency.format(job.price),
-        dateLabel: this.dateFmt.format(new Date(`${job.date}T12:00:00`)),
-        duration: durationInHours(job.start, job.end),
-      }));
-  });
-
   constructor() {
-    effect(() => localStorage.setItem(STORAGE_KEY, JSON.stringify(this.jobs())));
+    if(this.empresaId === null) {
+      this.showToast('Sessão expirada. Faça login novamente.');
+      return;
+    }
+
+    this.carregarVagas(this.empresaId);
   }
 
-  protected setFilter(filter: StatusFilter): void {
-    this.statusFilter.set(filter);
-  }
-
-  protected onSearch(event: Event): void {
-    this.search.set((event.target as HTMLInputElement).value);
+  private carregarVagas(empresaId: number): void {
+    this.vacancyService.listarVagas(empresaId).subscribe({
+      next: (vagas) => this.vagas.set(vagas.filter((v) => v.empresaId === this.empresaId)),
+      error: () => this.showToast('Não foi possível carregar as vagas.'),
+    });
   }
 
   protected toggleDetails(id: number): void {
     this.expandedId.update((current) => (current === id ? null : id));
   }
 
-  // ---------- Criar / editar ----------
   protected openCreate(): void {
-    this.editingJob.set(null);
+    this.editingVaga.set(null);
+    this.editingForm.set(null);
     this.formOpen.set(true);
   }
 
-  protected openEdit(job: CompanyJob): void {
-    this.editingJob.set(job);
+  protected openEdit(vaga: VacancyType): void {
+    this.editingVaga.set(vaga);
+    this.editingForm.set(toForm(vaga));
     this.formOpen.set(true);
   }
 
   protected save(data: VacancyFormValue): void {
-    const editing = this.editingJob();
-    if (editing === null) {
-      const nextId = Math.max(0, ...this.jobs().map((j) => j.id)) + 1;
-      this.jobs.update((jobs) => [{ ...data, id: nextId, status: 'open', candidates: 0 }, ...jobs]);
-      this.showToast('Vaga publicada com sucesso!');
-    } else {
-      this.jobs.update((jobs) => jobs.map((j) => (j.id === editing.id ? { ...j, ...data } : j)));
-      this.showToast('Vaga atualizada.');
+    if (this.empresaId === null) {
+      this.showToast('Sessão expirada. Faça login novamente.');
+      return;
     }
 
-    this.formOpen.set(false);
+    const editing = this.editingVaga();
+    const payload = toPayload(data, this.empresaId, editing?.estado);
+
+    const request = editing?.id
+      ? this.vacancyService.editarVaga(editing.id, payload)
+      : this.vacancyService.criarVaga(payload);
+
+    request.subscribe({
+      next: () => {
+        this.formOpen.set(false);
+        this.showToast(editing ? 'Vaga atualizada.' : 'Vaga publicada com sucesso!');
+        this.carregarVagas(this.empresaId || 0);
+      },
+      error: () => this.showToast('Não foi possível salvar a vaga. Tente novamente.'),
+    });
   }
 
-  // ---------- Encerrar / reabrir ----------
-  protected askClose(job: CompanyJob): void {
-    this.closingJob.set(job);
+  protected askDelete(vaga: VacancyType): void {
+    this.deletingVaga.set(vaga);
   }
 
-  protected confirmClose(): void {
-    const job = this.closingJob();
-    if (!job) return;
-    this.setStatus(job.id, 'closed');
-    this.closingJob.set(null);
-    this.showToast('Vaga encerrada. Ela não aparece mais para os freelancers.');
-  }
+  protected confirmDelete(): void {
+    const vaga = this.deletingVaga();
+    if (!vaga?.id) return;
 
-  protected reopen(job: CompanyJob): void {
-    this.setStatus(job.id, 'open');
-    this.showToast('Vaga reaberta.');
+    this.vacancyService.excluirVaga(vaga.id).subscribe({
+      next: () => {
+        this.deletingVaga.set(null);
+        this.showToast('Vaga excluída.');
+        this.carregarVagas(this.empresaId || 0);
+      },
+      error: () => this.showToast('Não foi possível excluir a vaga.'),
+    });
   }
 
   protected closeDialogs(): void {
     this.formOpen.set(false);
-    this.closingJob.set(null);
-  }
-
-  private setStatus(id: number, status: JobStatus): void {
-    this.jobs.update((jobs) => jobs.map((j) => (j.id === id ? { ...j, status } : j)));
+    this.deletingVaga.set(null);
   }
 
   private showToast(message: string): void {
@@ -256,21 +157,50 @@ export class VacancyManage {
     this.toast.set(message);
     this.toastTimer = setTimeout(() => this.toast.set(null), 3500);
   }
-
-  private loadJobs(): CompanyJob[] {
-    const dados = localStorage.getItem(STORAGE_KEY);
-    return dados ? JSON.parse(dados) : SEED;
-  }
-
-
 }
 
-function durationInHours(start: string, end: string): number {
-  const toMinutes = (t: string) => {
-    const [h, m] = t.split(':').map(Number);
-    return h * 60 + m;
+function getLoggedCompanyId(): number | null {
+  try {
+    const empresa = JSON.parse(localStorage.getItem(SESSION_KEY) ?? 'null');
+    return typeof empresa?.id === 'number' ? empresa.id : null;
+  } catch {
+    return null;
+  }
+}
+
+// Formulário do modal -> JSON da API
+function toPayload(data: VacancyFormValue, empresaId: number, estado = 'SP'): VacancyType {
+  return {
+    empresaId,
+    titulo: data.role,
+    categoria: data.category,
+    valor: data.price,
+    tipoRemuneracao: 'DIARIA',
+    data: data.date,
+    turno: TURNO_POR_PERIODO[data.period],
+    horaInicio: data.start,
+    horaFim: data.end,
+    descricao: data.summary,
+    requisitos: data.requirements,
+    endereco: data.address,
+    cidade: data.location,
+    estado,
   };
-  let diff = toMinutes(end) - toMinutes(start);
-  if (diff <= 0) diff += 24 * 60;
-  return Math.round((diff / 60) * 10) / 10;
+}
+
+// JSON da API -> formulário do modal (para edição)
+function toForm(vaga: VacancyType): VacancyFormValue {
+  return {
+    role: vaga.titulo,
+    category: vaga.categoria,
+    location: vaga.cidade,
+    address: vaga.endereco,
+    date: vaga.data,
+    period: PERIODO_POR_TURNO[vaga.turno],
+    start: vaga.horaInicio,
+    end: vaga.horaFim,
+    price: vaga.valor,
+    summary: vaga.descricao,
+    requirements: vaga.requisitos,
+  };
 }

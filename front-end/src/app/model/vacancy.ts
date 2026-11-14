@@ -1,18 +1,20 @@
+export type TipoRemuneracao = 'DIARIA' | 'MENSAL' | 'HORISTA';
+export type Turno = 'MANHA' | 'TARDE' | 'NOITE';
+
 export interface VacancyType {
-   empresaId: 0;
+  id?: number;
+  empresaId: number;
   titulo: string;
   categoria: string;
-  valor: 0;
-  tipoRemuneracao: 'DIARIA' | 'MENSAL' | 'HORISTA';
+  valor: number;
+  tipoRemuneracao: TipoRemuneracao;
   data: string;
-  turno: 'MANHA' | 'TARDE' | 'NOITE';
+  turno: Turno;
   horaInicio: string;
   horaFim: string;
   descricao: string;
-  requisitos: [
-    string
-  ];
+  requisitos: string[];
   endereco: string;
   cidade: string;
-  estado: string
+  estado: string;
 }
