@@ -1,0 +1,12 @@
+@if (tooltip.message(); as message) {
+  <div
+    [class]="'tooltip tooltip--' + message.type"
+    [attr.role]="message.type === 'error' ? 'alert' : 'status'"
+  >
+    <fa-icon class="tooltip__icon" [icon]="icons[message.type]" />
+    <span class="tooltip__text">{{ message.text }}</span>
+    <button type="button" class="tooltip__close" aria-label="Fechar mensagem" (click)="tooltip.hide()">
+      <fa-icon [icon]="icons.close" />
+    </button>
+  </div>
+}

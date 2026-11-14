@@ -117,10 +117,3 @@
     (close)="closeDialogs()"
   />
 }
-
-@if (toast(); as message) {
-  <div class="toast" role="status">
-    <fa-icon [icon]="icons.check" />
-    {{ message }}
-  </div>
-}

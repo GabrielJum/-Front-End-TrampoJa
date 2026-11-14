@@ -3,7 +3,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faCalendarDays,
   faChevronDown,
-  faCircleCheck,
   faClock,
   faFolderOpen,
   faLocationDot,
@@ -21,6 +20,7 @@ import {
 } from '../../../components/modal-create-vacancy/modal-create-vacancy';
 import { ModalAlert } from '../../../components/modal-alert/modal-alert';
 import { VacancyService } from '../../../service/vacancy/vacancy';
+import { TooltipService } from '../../../service/tooltip/tooltip';
 import { Turno, VacancyType } from '../../../model/vacancy';
 
 const SESSION_KEY = 'empresaLogada';
@@ -48,12 +48,12 @@ const PERIODO_POR_TURNO: Record<Turno, Period> = {
 })
 export class VacancyManage {
   private readonly vacancyService = inject(VacancyService);
+  private readonly tooltip = inject(TooltipService);
   private readonly empresaId = getLoggedCompanyId();
 
   protected readonly icons = {
     calendar: faCalendarDays,
     chevron: faChevronDown,
-    check: faCircleCheck,
     clock: faClock,
     empty: faFolderOpen,
     location: faLocationDot,
@@ -70,12 +70,9 @@ export class VacancyManage {
   protected readonly editingForm = signal<VacancyFormValue | null>(null);
   protected readonly deletingVaga = signal<VacancyType | null>(null);
 
-  protected readonly toast = signal<string | null>(null);
-  private toastTimer?: ReturnType<typeof setTimeout>;
-
   constructor() {
     if(this.empresaId === null) {
-      this.showToast('Sessão expirada. Faça login novamente.');
+      this.tooltip.error('Sessão expirada. Faça login novamente.');
       return;
     }
 
@@ -85,7 +82,7 @@ export class VacancyManage {
   private carregarVagas(empresaId: number): void {
     this.vacancyService.listarVagas(empresaId).subscribe({
       next: (vagas) => this.vagas.set(vagas.filter((v) => v.empresaId === this.empresaId)),
-      error: () => this.showToast('Não foi possível carregar as vagas.'),
+      error: () => this.tooltip.error('Não foi possível carregar as vagas.'),
     });
   }
 
@@ -107,7 +104,7 @@ export class VacancyManage {
 
   protected save(data: VacancyFormValue): void {
     if (this.empresaId === null) {
-      this.showToast('Sessão expirada. Faça login novamente.');
+      this.tooltip.error('Sessão expirada. Faça login novamente.');
       return;
     }
 
@@ -121,10 +118,10 @@ export class VacancyManage {
     request.subscribe({
       next: () => {
         this.formOpen.set(false);
-        this.showToast(editing ? 'Vaga atualizada.' : 'Vaga publicada com sucesso!');
+        this.tooltip.success(editing ? 'Vaga atualizada.' : 'Vaga publicada com sucesso!');
         this.carregarVagas(this.empresaId || 0);
       },
-      error: () => this.showToast('Não foi possível salvar a vaga. Tente novamente.'),
+      error: () => this.tooltip.error('Não foi possível salvar a vaga. Tente novamente.'),
     });
   }
 
@@ -139,22 +136,16 @@ export class VacancyManage {
     this.vacancyService.excluirVaga(vaga.id).subscribe({
       next: () => {
         this.deletingVaga.set(null);
-        this.showToast('Vaga excluída.');
+        this.tooltip.success('Vaga excluída.');
         this.carregarVagas(this.empresaId || 0);
       },
-      error: () => this.showToast('Não foi possível excluir a vaga.'),
+      error: () => this.tooltip.error('Não foi possível excluir a vaga.'),
     });
   }
 
   protected closeDialogs(): void {
     this.formOpen.set(false);
     this.deletingVaga.set(null);
-  }
-
-  private showToast(message: string): void {
-    clearTimeout(this.toastTimer);
-    this.toast.set(message);
-    this.toastTimer = setTimeout(() => this.toast.set(null), 3500);
   }
 }
 
