@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 
 export class EnterpriseService {
-  private readonly apiUrl = `${environment.apiUrl}/empresa`;
+  private readonly apiUrl = `${environment.apiUrl}empresa`;
 
   private http = inject(HttpClient);
 
