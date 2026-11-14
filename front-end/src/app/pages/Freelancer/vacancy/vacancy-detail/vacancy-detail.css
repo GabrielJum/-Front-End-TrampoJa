@@ -35,7 +35,7 @@ ul {
 /* ---------- Página ---------- */
 .page {
   flex: 1;
-  padding-block: 48px 80px;
+  padding-block: calc(72px + 1rem) 88px;
 }
 
 .back-link {
@@ -402,10 +402,6 @@ ul {
 @media (max-width: 560px) {
   .container {
     padding-inline: 16px;
-  }
-
-  .page {
-    padding-top: 105px;
   }
 
   .hero {

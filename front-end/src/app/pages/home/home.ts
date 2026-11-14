@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Header } from '../../components/header/header';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Footer } from '../../components/footer/footer';
 
 type CategoryIcon = 'shield' | 'party' | 'moto' | 'helmet' | 'truck' | 'dish';
@@ -34,9 +34,5 @@ export class Home {
     { name: 'Food truck', slug: 'food-truck', jobs: 123, icon: 'truck' },
     { name: 'Restaurante', slug: 'restaurante', jobs: 473, icon: 'dish' },
   ]);
-
-  protected readonly totalJobs = computed(() =>
-    this.categories().reduce((sum, c) => sum + c.jobs, 0),
-  );
 
 }

@@ -33,7 +33,7 @@ textarea:focus-visible {
 /* ---------- Página ---------- */
 .page {
   flex: 1;
-  padding-block: 48px 80px;
+  padding-block: calc(72px + 1rem) 88px;
 }
 
 .page__title {
@@ -142,7 +142,7 @@ textarea:focus-visible {
   margin: 0;
   padding: 0 12px 12px;
   list-style: none;
-  
+
 }
 
 
@@ -424,11 +424,7 @@ textarea:focus-visible {
   .container {
     padding-inline: 16px;
   }
-
-  .page {
-    padding-top: 105px;
-  }
-
+ 
   .chat {
     border-radius: var(--radius);
   }
