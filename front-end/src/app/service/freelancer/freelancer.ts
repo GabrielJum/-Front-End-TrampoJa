@@ -10,7 +10,7 @@ import { Freelancer } from '../../model/freelancer';
 })
 
 export class FreelancerService {
-  private readonly apiUrl = `http://localhost:8080/freelancer`;
+  private readonly apiUrl = `${environment.apiUrl}freelancer`;
 
   private http = inject(HttpClient);
 
@@ -25,7 +25,7 @@ export class FreelancerService {
 
   login(email: string, senha: string): Observable<Freelancer> {
     return this.http.post<Freelancer>(
-      `http://localhost:8080/freelancer/login`,
+      `${environment.apiUrl}freelancer/login`,
       { email, senha }
     );
   }
