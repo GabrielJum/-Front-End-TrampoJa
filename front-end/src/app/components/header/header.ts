@@ -16,6 +16,7 @@ interface NavLink {
 
 export class Header implements OnInit {
 
+  
   protected readonly year = new Date().getFullYear();
   protected readonly menuOpen = signal(false);
 
@@ -40,6 +41,6 @@ export class Header implements OnInit {
 
   ngOnInit() {
     this.currentUrl = this.router.url;
-    console.log(this.currentUrl); 
+    console.log(this.currentUrl);
   }
 }
