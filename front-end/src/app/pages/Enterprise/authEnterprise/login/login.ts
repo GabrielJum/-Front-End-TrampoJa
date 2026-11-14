@@ -26,7 +26,6 @@ interface Empresa {
 
 type Feedback = { type: 'error' | 'success' | 'info'; message: string } | null;
 
-const COMPANIES_KEY = 'empresas';
 const SESSION_KEY = 'empresaLogada';
 
 @Component({
@@ -113,8 +112,4 @@ export class Login {
     })
   }
 
-  private getEmpresas(): Empresa[] {
-    const dados = localStorage.getItem(COMPANIES_KEY);
-    return dados ? JSON.parse(dados) : [];
-  }
 }

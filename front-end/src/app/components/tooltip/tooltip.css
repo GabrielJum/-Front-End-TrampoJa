@@ -1,0 +1,76 @@
+/* Tokens de cor, raio e sombra vêm de app.css */
+.tooltip {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(400px, calc(100% - 32px));
+  padding: 14px 12px 14px 18px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  box-sizing: border-box;
+  animation: tooltip-in 0.3s ease-out;
+}
+
+.tooltip--success .tooltip__icon {
+  color: #6fe0a8;
+}
+
+.tooltip--error .tooltip__icon {
+  color: #ff9b9b;
+}
+
+.tooltip__text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.tooltip__close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgb(255 255 255 / 0.7);
+  cursor: pointer;
+}
+
+.tooltip__close:hover {
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+}
+
+.tooltip__close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .tooltip {
+    top: 16px;
+    right: 16px;
+  }
+}
