@@ -21,9 +21,8 @@ import {
 import { ModalAlert } from '../../../components/modal-alert/modal-alert';
 import { VacancyService } from '../../../service/vacancy/vacancy';
 import { TooltipService } from '../../../service/tooltip/tooltip';
+import { AuthService } from '../../../service/auth/auth';
 import { Turno, VacancyType } from '../../../model/vacancy';
-
-const SESSION_KEY = 'empresaLogada';
 
 const TURNO_POR_PERIODO: Record<Period, Turno> = {
   Manhã: 'MANHA',
@@ -49,7 +48,8 @@ const PERIODO_POR_TURNO: Record<Turno, Period> = {
 export class VacancyManage {
   private readonly vacancyService = inject(VacancyService);
   private readonly tooltip = inject(TooltipService);
-  private readonly empresaId = getLoggedCompanyId();
+  private readonly auth = inject(AuthService);
+  private readonly empresaId = this.auth.enterprise()?.id ?? null;
 
   protected readonly icons = {
     calendar: faCalendarDays,
@@ -146,15 +146,6 @@ export class VacancyManage {
   protected closeDialogs(): void {
     this.formOpen.set(false);
     this.deletingVaga.set(null);
-  }
-}
-
-function getLoggedCompanyId(): number | null {
-  try {
-    const empresa = JSON.parse(localStorage.getItem(SESSION_KEY) ?? 'null');
-    return typeof empresa?.id === 'number' ? empresa.id : null;
-  } catch {
-    return null;
   }
 }
 

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../service/auth/auth';
 
 interface NavLink {
   label: string;
@@ -15,8 +16,9 @@ interface NavLink {
 })
 
 export class Header implements OnInit {
+  private readonly auth = inject(AuthService);
+  protected readonly isUserLogin = this.auth.isLoggedIn();
 
-  
   protected readonly year = new Date().getFullYear();
   protected readonly menuOpen = signal(false);
 

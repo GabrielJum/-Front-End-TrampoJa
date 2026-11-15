@@ -17,6 +17,7 @@ import {
 import { Footer } from '../../../../components/footer/footer';
 import { Header } from '../../../../components/header/header';
 import { EnterpriseService } from '../../../../service/enterprise/enterprise';
+import { AuthService } from '../../../../service/auth/auth';
 
 interface Empresa {
   name: string;
@@ -25,8 +26,6 @@ interface Empresa {
 }
 
 type Feedback = { type: 'error' | 'success' | 'info'; message: string } | null;
-
-const SESSION_KEY = 'empresaLogada';
 
 @Component({
   selector: 'app-login',
@@ -51,6 +50,7 @@ export class Login {
 
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
 
   protected readonly showPassword = signal(false);
   protected readonly submitted = signal(false);
@@ -98,7 +98,7 @@ export class Login {
     this.enterpriseService.login(email, password).subscribe({
       next: (empresa) => {
         this.loading.set(false);
-        localStorage.setItem(SESSION_KEY, JSON.stringify(empresa));
+        this.auth.loginEnterprise(empresa);
         this.router.navigate(['/gerenciar-vagas']);
       },
 

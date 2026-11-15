@@ -1,9 +1,9 @@
-interface User {
-  name: string;
-  role: 'Freelancer' | 'Empresa';
-}
+import { Enterprise } from '../model/enterprise';
+import { Freelancer } from '../model/freelancer';
 
-export const user: User = {
-  name: 'Marcelo',
-  role: 'Empresa',
-};
+export type UserRole = 'Freelancer' | 'Empresa';
+
+/** Usuário logado: o papel indica qual é o tipo de `data`. */
+export type User =
+  | { role: 'Empresa'; data: Enterprise }
+  | { role: 'Freelancer'; data: Freelancer };
