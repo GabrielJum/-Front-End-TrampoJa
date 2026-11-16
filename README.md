@@ -1,49 +1,89 @@
-O projeto TrampoJá! é um projeto integrador com a intenção de ajudar pessoas que desejam 
-realizar trabalhos freelancers e empresas que desejam contratar esses profissionais.
-Como solução o projeto tem objetivo de criar uma plataforma web para que possa fazer
-essa conexão entre a empresa e os freelancers.
+# ⚡ Trampo Já!
 
-Entre algumas funções que serão aplicadas no projeto estão:
-• Cadastro de usuários freelancers e empresa.
-• Gerenciamento de Perfis.
-• Publicação e cadastramento de vagas freelancers.
-• Chat entre empresa e freelancer.
-• Avaliação mútua após o término do trabalho.
-• Contato com a administração do site.
+Plataforma web de intermediação de serviços freelancers, desenvolvida como **Projeto Integrador** do curso de Análise e Desenvolvimento de Sistemas da **Fatec Ferraz de Vasconcelos (2026)**.
 
-Os integrantes do projeto TrampoJá! são:
-•Gabriel Jum Iamashita
-•Rebeca Martins Caroba 
-•Yuri Carneiro Leite
+O **Trampo Já!** conecta profissionais autônomos a empresas que buscam contratações pontuais de forma rápida, transparente e segura, reduzindo a burocracia dos processos seletivos tradicionais.
 
-Tecnologias e bibliotecas utilizadas.   
-Entre as tecnologias usadas estão sendo utilizados:
-• Java
-• SpringBoot
-• PostgreeSql
-• Angular
-• Typescript
-• HTML
-• CSS
-• NodeJS
-• Apache Maven
+---
 
-Para realizar a clonagem do projeto e executá-lo
-será necessário o uso de algumas tecnologias e instalação, dentre elas 
-será necessário a instalação do Java, NodeJS, Editor de código fonte (como o VsCode),
-pgAdmin, NodeJs, ApacheMaven
+## 🌐 Links do Projeto (Produção e Repositórios)
 
-Após a instalação desses softwares poderá ser realizado a clonagem do github
+- **Aplicação Web (Front-end na Vercel):** https://front-end-trampo-ja.vercel.app/home
+- **Documentação da API (Swagger UI no Render):** https://trampoja.onrender.com/swagger-ui/index.html#/
+- **Repositório Front-end:** https://github.com/GabrielJum/-Front-End-TrampoJa
+- **Repositório Back-end:** https://github.com/yurilirafarias-prog/TrampoJa
 
-instalando ferramentas como o github desktop ou por meio do gitbash, sendo este último 
-necessário usar o comando de git clone 
+> **Nota:** A API está hospedada no plano gratuito do Render e entra em hibernação após 15 minutos sem uso. Caso o servidor esteja hibernando, a primeira requisição pode levar de 30 a 50 segundos para responder.
 
-É necessário instalar as duas partes do projeto sendo uma parte o front-end e a outra
-o back-end
+---
 
-para rodar a aplicação do front-end é necessário usar o comando no terminal
-inicialmente do npm install e após usar o comando ng serve
+## 🚀 Principais Funcionalidades
 
+- Cadastro e autenticação de usuários (**Freelancers** e **Empresas**)
+- Gerenciamento de perfis profissionais e corporativos
+- Publicação, busca e filtragem de vagas freelancers
+- Comunicação via chat entre empresa e freelancer
+- Avaliação mútua após a conclusão do trabalho
+- Canal de contato com a administração da plataforma
 
-Links das aplicações publicadas em deploy:
-https://front-end-trampo-ja.vercel.app/   
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Front-end:** Angular, TypeScript, HTML5, CSS3, Node.js
+- **Back-end:** Java, Spring Boot, Spring Security, Spring Data JPA, Apache Maven
+- **Banco de Dados:** PostgreSQL
+- **Infraestrutura / Deploy:** Vercel (Front-end), Render (Back-end e PostgreSQL)
+
+---
+
+## 💻 Como Executar o Projeto Localmente
+
+### Pré-requisitos
+- Java JDK (17+) e Apache Maven
+- Node.js e Angular CLI (`npm install -g @angular/cli`)
+- PostgreSQL e pgAdmin 4
+- Git e editor de código (ex.: VS Code)
+
+### 1. Configurar o Banco de Dados (PostgreSQL)
+1. Abra o **pgAdmin 4** e conecte-se ao seu servidor local (`postgres`).
+2. Clique com o botão direito em **Databases > Create > Database...**
+3. Crie um banco com o nome exato **`TrampoJa`** (respeitando letras maiúsculas e minúsculas).
+
+### 2. Executar o Back-end (Spring Boot)
+
+`bash`
+
+`git clone [https://github.com/yurilirafarias-prog/TrampoJa.git](https://github.com/yurilirafarias-prog/TrampoJa.git)`
+
+`cd TrampoJa`
+
+Abra src/main/resources/application.properties e substitua ${DB_PASSWORD} pela senha do seu PostgreSQL local em spring.datasource.password.
+
+Execute a aplicação:
+
+`mvn clean install`
+
+`mvn spring-boot:run`
+
+Acesse o Swagger local em: `http://localhost:8080/swagger-ui/index.html`
+
+### 3. Executar o Front-end (Angular)
+
+`git clone [https://github.com/GabrielJum/-Front-End-TrampoJa.git](https://github.com/GabrielJum/-Front-End-TrampoJa.git)`
+
+`cd -Front-End-TrampoJa`
+
+`npm install`
+
+`ng serve`
+
+Acesse no navegador: `http://localhost:4200`
+
+👥 Integrantes
+
+Gabriel Jum Iamashita
+
+Rebeca Martins Caroba
+
+Yuri Carneiro Leite
