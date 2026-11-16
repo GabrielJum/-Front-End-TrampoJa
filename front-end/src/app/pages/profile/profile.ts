@@ -7,8 +7,10 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Header } from '../../components/header/header';
 import { Footer } from '../../components/footer/footer';
+import { AuthService } from '../../service/auth/auth';
 
 interface UserProfile {
   name: string;
@@ -43,6 +45,8 @@ function currentPasswordRequired(group: AbstractControl): ValidationErrors | nul
 })
 export class Profile {
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly sinceFmt = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' });
 
   protected readonly minPassword = MIN_PASSWORD;
@@ -123,6 +127,11 @@ export class Profile {
 
   protected toggleVisibility(field: PasswordField): void {
     this.visible.update((v) => ({ ...v, [field]: !v[field] }));
+  }
+
+  protected logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/home']);
   }
 
   protected discard(): void {

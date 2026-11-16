@@ -144,6 +144,16 @@ ul {
   color: var(--primary);
 }
 
+.profile-card__logout {
+  width: 100%;
+  margin-top: 20px;
+  color: var(--danger);
+}
+
+.profile-card__logout:hover {
+  border-color: var(--danger);
+}
+
 /* ---------- Formulário ---------- */
 .form {
   display: grid;
