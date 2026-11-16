@@ -19,7 +19,8 @@ ol {
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
-  padding-block: 72px 56px;
+  /* 72px = altura do header fixo */
+  padding-block: calc(72px + 56px) 56px;
   overflow: hidden;
 }
 
@@ -537,7 +538,7 @@ ol {
 
 @media (max-width: 960px) {
   .hero {
-    padding-block: 48px 32px;
+    padding-block: calc(72px + 32px) 32px;
   }
 
   .hero__grid,
@@ -610,5 +611,12 @@ ol {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* Mobile: esconde os cards flutuantes sobre o banner */
+@media (max-width: 768px) {
+  .float-card {
+    display: none;
   }
 }
