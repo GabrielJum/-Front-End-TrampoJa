@@ -27,12 +27,6 @@ import { Footer } from '../../../../components/footer/footer';
 import { Header } from '../../../../components/header/header';
 import { Enterprise } from '../../../../model/enterprise';
 
-interface Empresa {
-  name: string;
-  email: string;
-  cnpj: string;
-  password: string;
-}
 
 type Feedback = { type: 'error' | 'success' | 'info'; message: string } | null;
 type Field = 'name' | 'email' | 'cnpj' | 'password' | 'confirmPassword' | 'terms';
@@ -163,20 +157,32 @@ export class Register {
       senha: password
     }
 
-    this.loading.set(true)
+    this.withLoading(()=> {
+      this.enterpriseService.cadastrar(empresa).subscribe({
+        next: (resposta) => {
+          console.log('Usuário cadastrado com sucesso!');
+          this.router.navigate(['/empresas/login'])
+        },
 
-    this.enterpriseService.cadastrar(empresa).subscribe({
-      next: (resposta) => {
-        console.log('Usuário cadastrado com sucesso!');
-        this.router.navigate(['/empresa/login'])
-      },
+        error: (erro) => {
+          this.feedback.set({
+            type: 'error',
+            message: `${erro.error}`,
+          });
+        }
+      });
+     })
 
-      error: (erro) => {
-        console.error('Erro ao cadastrar usuário:');
-      }
-    });
-
-    this.loading.set(false)
   }
+
+  private withLoading(action: () => void): void {
+    this.loading.set(true);
+
+    setTimeout(() => {
+      action();
+      this.loading.set(false);
+    }, 500);
+  }
+
 
 }
