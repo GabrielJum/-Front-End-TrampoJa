@@ -1,249 +1,166 @@
 <app-header />
 
 <main class="container page">
-  <!-- ============ TÍTULO + ABAS ============ -->
   <div class="page__head">
     <h1 class="page__title">Buscar vagas</h1>
   </div>
 
   <app-navigation-tabs />
+  <div class="layout">
+    <!-- ============ FILTROS ============ -->
 
-  @if (activeTab() === 'search') {
-    <div class="layout">
-      <!-- ============ FILTROS ============ -->
       <button type="button" class="btn btn--outline filters-toggle" (click)="toggleFilters()">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4" /></svg>
+        <fa-icon [icon]="icons.filter" aria-hidden="true" />
         Filtros
         @if (activeFilterCount()) {
           <span class="count">{{ activeFilterCount() }}</span>
         }
       </button>
+    
 
-      <aside class="filters" [class.is-open]="filtersOpen()" aria-label="Filtros">
-        <div class="filters__head">
-          <h2>Filtros</h2>
+    <aside class="filters" [class.is-open]="filtersOpen()" aria-label="Filtros">
+      <div class="filters__head">
+        <h2>Filtros</h2>
+        @if (activeFilterCount()) {
+          <button type="button" class="link-btn" (click)="clearFilters()">Limpar</button>
+        }
+      </div>
+
+      <label class="field">
+        <span class="field__label">
+          <fa-icon [icon]="icons.location" aria-hidden="true" />
+          Localização
+        </span>
+        <select [(ngModel)]="location">
+          <option value="any">Qualquer</option>
+          @for (loc of locations(); track loc) {
+            <option [value]="loc">{{ loc }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">
+          <fa-icon [icon]="icons.category" aria-hidden="true" />
+          Categoria
+        </span>
+        <select [(ngModel)]="category">
+          <option value="any">Qualquer</option>
+          @for (cat of categories(); track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">
+          <fa-icon [icon]="icons.calendar" aria-hidden="true" />
+          Data
+        </span>
+        <select [(ngModel)]="date">
+          <option value="any">Qualquer</option>
+          <option value="today">Hoje</option>
+          <option value="week">Próximos 7 dias</option>
+          <option value="month">Próximos 30 dias</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">
+          <fa-icon [icon]="icons.price" aria-hidden="true" />
+          Faixa de preço
+        </span>
+        <select [(ngModel)]="price">
+          <option value="any">Qualquer</option>
+          <option value="upTo100">Até R$ 100</option>
+          <option value="100to150">R$ 100 a R$ 150</option>
+          <option value="over150">Acima de R$ 150</option>
+        </select>
+      </label>
+
+      <button type="button" class="btn btn--primary btn--block" (click)="applyFilters()">
+        Aplicar filtros
+      </button>
+    </aside>
+
+    <!-- ============ LISTA DE VAGAS ============ -->
+    <section class="results" aria-labelledby="results-title">
+      <div class="results__head">
+        <h2 id="results-title">Vagas disponíveis</h2>
+        <span class="results__count">
+          {{ vagasFiltradas().length }}
+          {{ vagasFiltradas().length === 1 ? 'vaga encontrada' : 'vagas encontradas' }}
+        </span>
+      </div>
+
+      @for (vaga of vagasFiltradas(); track vaga.id) {
+        <article class="job">
+          <div class="job__logo">
+            <span aria-hidden="true">{{ initials(vaga.empresaNome) }}</span>
+          </div>
+
+          <div class="job__body">
+            <div class="job__top">
+              <div>
+                <span class="tag">{{ vaga.categoria }}</span>
+                <h3 class="job__role">{{ vaga.titulo }}</h3>
+                <p class="job__company">{{ vaga.empresaNome }}</p>
+              </div>
+
+              <div class="rating" [attr.aria-label]="'Avaliação ' + rating + ' de 5'">
+                @for (s of stars; track s) {
+                  <fa-icon [icon]="icons.star" class="star" [class.is-full]="s <= rating" aria-hidden="true" />
+                }
+                <span>{{ rating.toFixed(1) }}</span>
+              </div>
+            </div>
+
+            <ul class="job__meta">
+              <li>
+                <fa-icon [icon]="icons.calendar" aria-hidden="true" />
+                {{ vaga.data }}
+              </li>
+              <li>
+                <fa-icon [icon]="icons.clock" aria-hidden="true" />
+                {{ vaga.horaInicio }} – {{ vaga.horaFim }}
+              </li>
+              <li>
+                <fa-icon [icon]="icons.location" aria-hidden="true" />
+                {{ vaga.cidade }} - {{ vaga.estado }}
+              </li>
+            </ul>
+
+            <div class="job__footer">
+              <p class="job__price">R$ {{ vaga.valor }} <small>/ {{ vaga.tipoRemuneracao }}</small></p>
+
+              <div class="job__actions">
+                <a [routerLink]="['/vagas', vaga.id]" class="btn btn--ghost">Ver mais sobre</a>
+
+                @if (appliedIds().has(vaga.id!)) {
+                  <button type="button" class="btn btn--success" disabled>
+                    <fa-icon [icon]="icons.check" aria-hidden="true" />
+                    Candidatura enviada
+                  </button>
+                } @else {
+                  <button type="button" class="btn btn--accent" (click)="apply(vaga.id!)">
+                    Candidatar-se
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        </article>
+      } @empty {
+        <div class="empty">
+          <h3>Nenhuma vaga encontrada</h3>
+          <p>Tente ajustar ou limpar os filtros para ver mais oportunidades.</p>
           @if (activeFilterCount()) {
-            <button type="button" class="link-btn" (click)="clearFilters()">Limpar</button>
+            <button type="button" class="btn btn--outline" (click)="clearFilters()">Limpar filtros</button>
           }
         </div>
-
-        <label class="field">
-          <span class="field__label">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            Localização
-          </span>
-          <select [(ngModel)]="location">
-            <option value="any">Qualquer</option>
-            @for (loc of locations(); track loc) {
-              <option [value]="loc">{{ loc }}</option>
-            }
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field__label">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="3" y="3" width="7" height="7" rx="1.5" />
-              <rect x="14" y="3" width="7" height="7" rx="1.5" />
-              <rect x="3" y="14" width="7" height="7" rx="1.5" />
-              <rect x="14" y="14" width="7" height="7" rx="1.5" />
-            </svg>
-            Categoria
-          </span>
-          <select [(ngModel)]="category">
-            <option value="any">Qualquer</option>
-            @for (cat of categories(); track cat) {
-              <option [value]="cat">{{ cat }}</option>
-            }
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field__label">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <path d="M16 2v4M8 2v4M3 10h18" />
-            </svg>
-            Data e hora
-          </span>
-          <select [(ngModel)]="date">
-            <option value="any">Qualquer</option>
-            <option value="today">Hoje</option>
-            <option value="week">Próximos 7 dias</option>
-            <option value="month">Próximos 30 dias</option>
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field__label">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-            Faixa de preço
-          </span>
-          <select [(ngModel)]="price">
-            <option value="any">Qualquer</option>
-            <option value="upTo100">Até R$ 100</option>
-            <option value="100to150">R$ 100 a R$ 150</option>
-            <option value="over150">Acima de R$ 150</option>
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field__label">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z" />
-            </svg>
-            Avaliação
-          </span>
-          <select [(ngModel)]="minRating">
-            <option [ngValue]="0">Qualquer</option>
-            <option [ngValue]="3">3 estrelas ou mais</option>
-            <option [ngValue]="4">4 estrelas ou mais</option>
-            <option [ngValue]="5">Apenas 5 estrelas</option>
-          </select>
-        </label>
-
-        <button type="button" class="btn btn--primary btn--block" (click)="applyFilters()">
-          Aplicar filtros
-        </button>
-      </aside>
-
-      <!-- ============ LISTA DE VAGAS ============ -->
-      <section class="results" aria-labelledby="results-title">
-        <svg class="sr-only" aria-hidden="true">
-          <defs>
-            <linearGradient id="star-half">
-              <stop offset="50%" stop-color="currentColor" />
-              <stop offset="50%" stop-color="transparent" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        <div class="results__head">
-          <h2 id="results-title">Vagas disponíveis</h2>
-          <span class="results__count">
-            {{ totalResults() }} {{ totalResults() === 1 ? 'vaga encontrada' : 'vagas encontradas' }}
-          </span>
-        </div>
-
-        @for (job of visibleJobs(); track job.id) {
-          <article class="job">
-            <div class="job__logo">
-              @if (job.logoUrl) {
-                <img [src]="job.logoUrl" [alt]="'Logo ' + job.company" />
-              } @else {
-                <span aria-hidden="true">{{ job.initials }}</span>
-              }
-            </div>
-
-            <div class="job__body">
-              <div class="job__top">
-                <div>
-                  <span class="tag">{{ job.category }}</span>
-                  <h3 class="job__role">{{ job.role }}</h3>
-                  <p class="job__company">{{ job.company }}</p>
-                </div>
-
-                <div class="rating" [attr.aria-label]="'Avaliação ' + job.rating + ' de 5'">
-                  @for (s of stars; track s) {
-                    <svg
-                      viewBox="0 0 24 24"
-                      class="star"
-                      [class.is-full]="s <= job.rating"
-                      [class.is-half]="s > job.rating && s - 0.5 <= job.rating"
-                      aria-hidden="true"
-                    >
-                      <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z" />
-                    </svg>
-                  }
-                  <span>{{ job.rating.toFixed(1) }}</span>
-                </div>
-              </div>
-
-              <ul class="job__meta">
-                <li>
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                  </svg>
-                  {{ job.dateLabel }}
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 6v6l4 2" />
-                  </svg>
-                  {{ job.start }} – {{ job.end }}
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                  {{ job.location }}
-                </li>
-              </ul>
-
-              <div class="job__footer">
-                <p class="job__price">{{ job.priceLabel }} <small>/ diária</small></p>
-
-                <div class="job__actions">
-                  <a routerLink="/vagas/1" class="link-btn">
-                    <button
-                      type="button"
-                      class="btn btn--ghost"
-                    >
-                      Ver mais sobre
-                    </button>
-                  </a>
-
-                  @if (appliedJobIds().has(job.id)) {
-                    <button type="button" class="btn btn--success" disabled>
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-                      Candidatura enviada
-                    </button>
-                  } @else {
-                    <button type="button" class="btn btn--accent" (click)="apply(job.id)">
-                      Candidatar-se
-                    </button>
-                  }
-                </div>
-              </div>
-            </div>
-          </article>
-        } @empty {
-          <div class="empty">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-3.5-3.5" />
-            </svg>
-            <h3>Nenhuma vaga encontrada</h3>
-            <p>Tente ajustar ou limpar os filtros para ver mais oportunidades.</p>
-            <button type="button" class="btn btn--outline" (click)="clearFilters()">Limpar filtros</button>
-          </div>
-        }
-
-        @if (hasMore()) {
-          <button type="button" class="btn btn--outline load-more" (click)="loadMore()">
-            Ver mais vagas
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-          </button>
-        }
-      </section>
-    </div>
-  } @else {
-    <div class="empty empty--panel">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 6v6l4 2" />
-        <circle cx="12" cy="12" r="10" />
-      </svg>
-      <h3>Em breve</h3>
-      <p>Esta seção ainda está em construção.</p>
-    </div>
-  }
+      }
+    </section>
+  </div>
 </main>
+
 <app-footer />

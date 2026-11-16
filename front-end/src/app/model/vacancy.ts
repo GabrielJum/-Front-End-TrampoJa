@@ -17,4 +17,5 @@ export interface VacancyType {
   endereco: string;
   cidade: string;
   estado: string;
+  empresaNome?: string;
 }

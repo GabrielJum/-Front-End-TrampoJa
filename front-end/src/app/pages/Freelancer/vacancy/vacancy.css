@@ -6,15 +6,11 @@
   min-height: 100vh;
 }
 
-svg {
-  width: 18px;
-  height: 18px;
+fa-icon {
+  display: inline-flex;
   flex-shrink: 0;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  font-size: 16px;
+  line-height: 1;
 }
 
 h1, h2, h3, p {
@@ -158,9 +154,8 @@ a:focus-visible {
   color: var(--text);
 }
 
-.field__label svg {
-  width: 16px;
-  height: 16px;
+.field__label fa-icon {
+  font-size: 14px;
   color: var(--accent);
 }
 
@@ -292,22 +287,12 @@ a:focus-visible {
 }
 
 .star {
-  width: 17px;
-  height: 17px;
+  font-size: 15px;
   color: #d9dee7;
-  fill: currentColor;
-  stroke: none;
 }
 
 .star.is-full {
   color: #f5a623;
-}
-
-.star.is-half {
-  color: #f5a623;
-  fill: url(#star-half);
-  stroke: #f5a623;
-  stroke-width: 1.5;
 }
 
 .job__meta {
@@ -328,9 +313,8 @@ a:focus-visible {
   text-transform: capitalize;
 }
 
-.job__meta svg {
-  width: 16px;
-  height: 16px;
+.job__meta fa-icon {
+  font-size: 14px;
   color: var(--primary);
 }
 
@@ -388,16 +372,6 @@ a:focus-visible {
   background: var(--surface);
   text-align: center;
   color: var(--muted);
-}
-
-.empty > svg {
-  width: 44px;
-  height: 44px;
-  margin-bottom: 8px;
-  padding: 12px;
-  border-radius: 50%;
-  background: var(--primary-50);
-  color: var(--primary);
 }
 
 .empty h3 {
