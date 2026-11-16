@@ -38,7 +38,8 @@ ul {
 /* ---------- Página ---------- */
 .page {
   flex: 1;
-  padding-block: 48px 80px;
+  /* 72px = altura do header fixo */
+  padding-block: calc(72px + 48px) 80px;
 }
 
 .page__head {
@@ -156,7 +157,9 @@ ul {
 
 /* ---------- Formulário ---------- */
 .form {
+  min-width: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
 }
 
@@ -201,6 +204,7 @@ ul {
 
 .fields {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 
@@ -407,7 +411,7 @@ ul {
 /* ---------- Responsivo ---------- */
 @media (max-width: 900px) {
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .profile-card {
@@ -417,7 +421,7 @@ ul {
 
 @media (max-width: 640px) {
   .page {
-    padding-block: 32px 56px;
+    padding-block: calc(72px + 32px) 56px;
   }
 
   .section {
@@ -425,7 +429,7 @@ ul {
   }
 
   .fields--2 {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .actions {
@@ -434,10 +438,14 @@ ul {
 
   .actions__buttons {
     width: 100%;
+    flex-wrap: wrap;
   }
 
   .actions__buttons .btn {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-inline: 16px;
+    white-space: nowrap;
   }
 }
 
