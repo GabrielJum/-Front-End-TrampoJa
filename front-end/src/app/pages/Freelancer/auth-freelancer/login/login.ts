@@ -10,8 +10,7 @@ import { Header } from '../../../../components/header/header';
 
 type Feedback = { type: 'error' | 'success' | 'info'; message: string } | null;
 
-const USERS_KEY = 'usuarios';
-const SESSION_KEY = 'usuarioLogado';
+import { AuthService } from '../../../../service/auth/auth';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +30,7 @@ export class Login {
 
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
 
   protected readonly showPassword = signal(false);
   protected readonly submitted = signal(false);
@@ -78,12 +78,12 @@ export class Login {
     this.withLoading( () => {
       this.freelancerService.login(email, password).subscribe({
       next: (freelancer) => {
-        localStorage.setItem(SESSION_KEY, JSON.stringify(freelancer));
+        this.auth.loginFreelancer(freelancer);
         this.router.navigate(['/vagas']);
       },
 
       error: (err) => {
-        this.feedback.set({ type: 'error', message: 'Email ou senha inválidos.' });
+        this.feedback.set({ type: 'error', message: `${err.error}` });
       }
     });
     })

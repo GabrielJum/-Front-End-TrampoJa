@@ -1,4 +1,5 @@
 export interface Freelancer {
+  id?: number;
   nome: string;
   cpf: string;
   telefone: string;

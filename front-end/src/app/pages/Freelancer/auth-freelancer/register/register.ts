@@ -120,9 +120,8 @@ export class Register {
         },
 
         error: (erro) => {
-          console.error('Erro ao cadastrar usuário:', erro);
+          this.feedback.set({ type: 'error', message: `${erro.error}` });
         }
-
       })
     })
   }
