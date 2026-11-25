@@ -16,6 +16,10 @@ export class VacancyService {
     return this.http.get<VacancyType[]>(this.apiUrl);
   }
 
+  buscarVaga(id: number): Observable<VacancyType> {
+    return this.http.get<VacancyType>(`${this.apiUrl}/${id}`);
+  }
+
   listarVagas(empresaId: number): Observable<VacancyType[]> {
     return this.http.get<VacancyType[]>(`${this.apiUrl}?empresaId=${empresaId}`);
   }
