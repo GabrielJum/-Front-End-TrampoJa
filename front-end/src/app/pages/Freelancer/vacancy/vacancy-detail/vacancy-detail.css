@@ -7,15 +7,11 @@
   min-height: 100vh;
 }
 
-svg {
-  width: 18px;
-  height: 18px;
+fa-icon {
+  display: inline-flex;
   flex-shrink: 0;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  font-size: 18px;
+  line-height: 1;
 }
 
 h1, h2, h3, h4, p {
@@ -49,9 +45,8 @@ ul {
   transition: color 0.2s, gap 0.2s;
 }
 
-.back-link svg {
-  width: 16px;
-  height: 16px;
+.back-link fa-icon {
+  font-size: 16px;
 }
 
 .back-link:hover {
@@ -161,11 +156,8 @@ ul {
 }
 
 .star {
-  width: 18px;
-  height: 18px;
+  font-size: 18px;
   color: #d9dee7;
-  fill: currentColor;
-  stroke: none;
 }
 
 .star.is-full {
@@ -274,10 +266,8 @@ ul {
   color: var(--success);
 }
 
-.check svg {
-  width: 14px;
-  height: 14px;
-  stroke-width: 3;
+.check fa-icon {
+  font-size: 13px;
 }
 
 /* ---------- Candidatura ---------- */
@@ -346,9 +336,8 @@ ul {
   text-align: center;
 }
 
-.apply__hint svg {
-  width: 14px;
-  height: 14px;
+.apply__hint fa-icon {
+  font-size: 14px;
   color: var(--success);
 }
 
@@ -365,9 +354,12 @@ ul {
   color: var(--muted);
 }
 
-.empty > svg {
+.empty > fa-icon {
+  display: grid;
+  place-items: center;
   width: 44px;
   height: 44px;
+  font-size: 20px;
   margin-bottom: 8px;
   padding: 12px;
   border-radius: 50%;

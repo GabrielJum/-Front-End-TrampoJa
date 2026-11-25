@@ -4,7 +4,7 @@
   <!-- ============ TÍTULO + ABAS ============ -->
   <div class="page__head">
     <a routerLink="/vagas" class="back-link">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+      <fa-icon [icon]="icons.back" aria-hidden="true" />
       Voltar a vagas
     </a>
     <h1 class="page__title">Buscar vagas</h1>
@@ -13,147 +13,123 @@
   <app-navigation-tabs />
 
   @if (job(); as job) {
-    <!-- ============ CABEÇALHO DA VAGA ============ -->
-    <section class="hero" aria-labelledby="job-title">
-      <div class="hero__logo">
-        @if (job.logoUrl) {
-          <img [src]="job.logoUrl" [alt]="'Logo ' + job.company" />
-        } @else {
-          <span aria-hidden="true">{{ job.initials }}</span>
-        }
-      </div>
+  <!-- ============ CABEÇALHO DA VAGA ============ -->
+  <section class="hero" aria-labelledby="job-title">
+    <div class="hero__logo">
+      <span aria-hidden="true">{{ job.empresaNome?.charAt(0) }}</span>
+    </div>
 
-      <div class="hero__info">
-        <span class="tag">{{ job.category }}</span>
-        <h2 id="job-title" class="hero__role">{{ job.role }}</h2>
-        <p class="hero__company">
-          <strong>{{ job.company }}</strong>
-          <span class="dot" aria-hidden="true"></span>
-          {{ job.companyType }}
-        </p>
-      </div>
+    <div class="hero__info">
+      <h2 id="job-title" class="hero__role">{{ job.titulo }}</h2>
+      <p class="hero__company">
+        <strong>{{ job.empresaNome }}</strong>
+      </p>
+    </div>
 
-      <div class="rating" [attr.aria-label]="'Avaliação ' + job.rating + ' de 5'">
-        @for (s of stars; track s) {
-          <svg viewBox="0 0 24 24" class="star" [class.is-full]="s <= job.rating" aria-hidden="true">
-            <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z" />
-          </svg>
-        }
-        <span>{{ job.rating.toFixed(1) }}</span>
-      </div>
+    <div class="rating">
+      @for (s of stars; track s) {
+        <fa-icon [icon]="icons.star" class="star" [class.is-full]="s <= rating" aria-hidden="true" />
+      }
+    </div>
 
-      <ul class="hero__meta">
+    <ul class="hero__meta">
+      <li>
+        <span class="meta-icon">
+          <fa-icon [icon]="icons.calendar" aria-hidden="true" />
+        </span>
+        <span>
+          <small>Data</small>
+          <span class="capitalize">{{ job.data }}</span>
+        </span>
+      </li>
+      <li>
+        <span class="meta-icon">
+          <fa-icon [icon]="icons.clock" aria-hidden="true" />
+        </span>
+        <span>
+          <small>Período</small>
+          {{ job.turno }} · {{ job.horaInicio }} – {{ job.horaFim }}
+        </span>
+      </li>
+      <li>
+        <span class="meta-icon">
+          <fa-icon [icon]="icons.location" aria-hidden="true" />
+        </span>
+        <span>
+          <small>Local</small>
+          {{ job.cidade }} - {{ job.estado }}
+        </span>
+      </li>
+    </ul>
+  </section>
+
+  <div class="layout">
+    <!-- ============ DESCRIÇÃO ============ -->
+    <div class="content">
+      <section class="card" aria-labelledby="about-title">
+        <h3 id="about-title" class="card__title">Sobre a vaga</h3>
+        <p class="card__text">{{ job.descricao }}</p>
+
+        <h4 class="card__subtitle">Quem procuramos</h4>
+        <ul class="checklist">
+          @for (req of job.requisitos; track $index) {
+          <li>
+            <span class="check" aria-hidden="true">
+              <fa-icon [icon]="icons.check" />
+            </span>
+            {{ req }}
+          </li>
+          }
+        </ul>
+      </section>
+
+      <app-address [address]="job.endereco" />
+    </div>
+
+    <!-- ============ CANDIDATURA ============ -->
+    <aside class="apply" aria-label="Candidatura">
+      <p class="apply__label">Valor da diária</p>
+      <p class="apply__price">R$ {{ job.valor }}</p>
+
+      <ul class="apply__summary">
         <li>
-          <span class="meta-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <path d="M16 2v4M8 2v4M3 10h18" />
-            </svg>
-          </span>
-          <span>
-            <small>Data</small>
-            <span class="capitalize">{{ job.dateLabel }}</span>
-          </span>
+          <span>Remuneração</span>
+          <strong>{{ job.tipoRemuneracao }}</strong>
         </li>
         <li>
-          <span class="meta-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg>
-          </span>
-          <span>
-            <small>Período</small>
-            {{ job.period }} · {{ job.start }} – {{ job.end }}
-          </span>
+          <span>Horário</span>
+          <strong>{{ job.horaInicio }} – {{ job.horaFim }}</strong>
         </li>
         <li>
-          <span class="meta-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-          </span>
-          <span>
-            <small>Local</small>
-            {{ job.city }}
-          </span>
+          <span>Pagamento</span>
+          <strong>Ao final do turno</strong>
         </li>
       </ul>
-    </section>
 
-    <div class="layout">
-      <!-- ============ DESCRIÇÃO ============ -->
-      <div class="content">
-        <section class="card" aria-labelledby="about-title">
-          <h3 id="about-title" class="card__title">Sobre a vaga</h3>
-          <p class="card__text">{{ job.summary }}</p>
-
-          <h4 class="card__subtitle">Quem procuramos</h4>
-          <ul class="checklist">
-            @for (req of job.requirements; track $index) {
-              <li>
-                <span class="check" aria-hidden="true">
-                  <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
-                </span>
-                {{ req }}
-              </li>
-            }
-          </ul>
-        </section>
-
-        <app-address [address]="job.address" />
-      </div>
-
-      <!-- ============ CANDIDATURA ============ -->
-      <aside class="apply" aria-label="Candidatura">
-        <p class="apply__label">Valor da diária</p>
-        <p class="apply__price">{{ job.priceLabel }}</p>
-
-        <ul class="apply__summary">
-          <li>
-            <span>Duração</span>
-            <strong>{{ job.duration }}h</strong>
-          </li>
-          <li>
-            <span>Horário</span>
-            <strong>{{ job.start }} – {{ job.end }}</strong>
-          </li>
-          <li>
-            <span>Pagamento</span>
-            <strong>Ao final do turno</strong>
-          </li>
-        </ul>
-
-        @if (applied()) {
-          <button type="button" class="btn btn--success btn--block" disabled>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-            Candidatura enviada
-          </button>
-          <p class="apply__hint">A empresa vai entrar em contato pelo chat.</p>
-        } @else {
-          <button type="button" class="btn btn--accent btn--block" (click)="apply()">
-            Candidatar-se
-          </button>
-          <p class="apply__hint">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-            </svg>
-            Empresa verificada pela Trampo Já!
-          </p>
-        }
-      </aside>
-    </div>
+      @if (applied()) {
+      <button type="button" class="btn btn--success btn--block" disabled>
+        <fa-icon [icon]="icons.check" aria-hidden="true" />
+        Candidatura enviada
+      </button>
+      <p class="apply__hint">A empresa vai entrar em contato pelo chat.</p>
+      } @else {
+      <button type="button" class="btn btn--accent btn--block" (click)="apply()">
+        Candidatar-se
+      </button>
+      <p class="apply__hint">
+        <fa-icon [icon]="icons.shield" aria-hidden="true" />
+        Empresa verificada pela Trampo Já!
+      </p>
+      }
+    </aside>
+  </div>
   } @else {
-    <div class="empty">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </svg>
-      <h3>Vaga não encontrada</h3>
-      <p>Ela pode ter sido encerrada ou removida pela empresa.</p>
-      <a routerLink="/vagas" class="btn btn--outline">Ver outras vagas</a>
-    </div>
+  <div class="empty">
+    <fa-icon [icon]="icons.search" aria-hidden="true" />
+    <h3>Vaga não encontrada</h3>
+    <p>Ela pode ter sido encerrada ou removida pela empresa.</p>
+    <a routerLink="/vagas" class="btn btn--outline">Ver outras vagas</a>
+  </div>
   }
 </main>
 <app-footer />
