@@ -1,0 +1,88 @@
+<!--
+  Template compartilhado por ProfileFreelancer e ProfileEnterprise.
+  Cada componente define seu título, descrição e lista de campos.
+-->
+<section class="card section" [attr.aria-labelledby]="titleId" [formGroup]="group()">
+  <header class="section__head">
+    <span class="section__icon" aria-hidden="true">
+      <fa-icon [icon]="sectionIcon" />
+    </span>
+    <div>
+      <h2 [id]="titleId" class="section__title">{{ title }}</h2>
+      <p class="section__desc">{{ description }}</p>
+    </div>
+  </header>
+
+  @if (pendingLabels().length) {
+    <div class="notice" role="status">
+      <fa-icon [icon]="statusIcons.warning" aria-hidden="true" />
+      <p>
+        Seu cadastro está incompleto. Preencha os campos pendentes:
+        <strong>{{ pendingLabels().join(', ') }}</strong>.
+      </p>
+    </div>
+  }
+
+  <div class="fields fields--2">
+    @for (field of fields; track field.key) {
+      <div class="field" [class.field--full]="field.full">
+        <div class="field__label-row">
+          <label class="field__label" [for]="field.key">{{ field.label }}</label>
+          @if (isPending(field.key)) {
+            <span class="badge-pending">
+              <fa-icon [icon]="statusIcons.pending" aria-hidden="true" />
+              Pendente
+            </span>
+          }
+        </div>
+
+        <div
+          class="input"
+          [class.input--textarea]="field.type === 'textarea'"
+          [class.is-pending]="isPending(field.key) && !showError(field.key)"
+          [class.is-invalid]="showError(field.key)"
+        >
+          <fa-icon [icon]="field.icon" aria-hidden="true" />
+
+          @if (field.type === 'textarea') {
+            <textarea
+              [id]="field.key"
+              [formControlName]="field.key"
+              [placeholder]="field.placeholder"
+              [attr.aria-invalid]="showError(field.key)"
+              [attr.aria-describedby]="field.key + '-msg'"
+            ></textarea>
+          } @else if (field.type === 'number') {
+            <!-- type estático para o Angular usar o NumberValueAccessor -->
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [id]="field.key"
+              [formControlName]="field.key"
+              [placeholder]="field.placeholder"
+              [attr.aria-invalid]="showError(field.key)"
+              [attr.aria-describedby]="field.key + '-msg'"
+            />
+          } @else {
+            <input
+              [type]="field.type ?? 'text'"
+              [id]="field.key"
+              [formControlName]="field.key"
+              [attr.autocomplete]="field.autocomplete"
+              [placeholder]="field.placeholder"
+              [attr.aria-invalid]="showError(field.key)"
+              [attr.aria-describedby]="field.key + '-msg'"
+            />
+          }
+        </div>
+
+        @if (showError(field.key)) {
+          <p [id]="field.key + '-msg'" class="field__error">{{ field.error }}</p>
+        } @else if (isPending(field.key)) {
+          <p [id]="field.key + '-msg'" class="field__hint">Você ainda não preencheu este campo.</p>
+        }
+      </div>
+    }
+  </div>
+</section>

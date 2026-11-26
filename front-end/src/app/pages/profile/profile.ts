@@ -1,33 +1,34 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
+  FormBuilder,
+  FormGroup,
   NonNullableFormBuilder,
   ReactiveFormsModule,
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBriefcase, faBuilding, faCircleCheck, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { finalize, Observable } from 'rxjs';
 import { Header } from '../../components/header/header';
 import { Footer } from '../../components/footer/footer';
 import { AuthService } from '../../service/auth/auth';
-
-interface UserProfile {
-  name: string;
-  email: string;
-  memberSince: string; // ISO yyyy-mm-dd
-}
+import { EnterpriseService } from '../../service/enterprise/enterprise';
+import { FreelancerService } from '../../service/freelancer/freelancer';
+import { TooltipService } from '../../service/tooltip/tooltip';
+import { Enterprise } from '../../model/enterprise';
+import { Freelancer } from '../../model/freelancer';
+import { isEmptyValue } from './profile-section';
+import { buildFreelancerForm, ProfileFreelancer } from './profile-freelancer/profile-freelancer';
+import { buildEnterpriseForm, ProfileEnterprise } from './profile-enterprise/profile-enterprise';
 
 type PasswordField = 'newPassword' | 'currentPassword';
+type ProfileData = Enterprise | Freelancer;
 
 const MIN_PASSWORD = 6;
-
-// TODO: substituir pelo usuário autenticado quando houver integração com a API
-const CURRENT_USER: UserProfile = {
-  name: 'Rodrigo Silva de Carvalho',
-  email: 'rodrigosilva@email.com',
-  memberSince: '2025-03-14',
-};
 
 /** Exige a senha atual sempre que uma nova senha for informada. */
 function currentPasswordRequired(group: AbstractControl): ValidationErrors | null {
@@ -36,27 +37,58 @@ function currentPasswordRequired(group: AbstractControl): ValidationErrors | nul
   return next && !current ? { currentPasswordRequired: true } : null;
 }
 
+/** Compara valores do formulário com os da API ignorando null/'' e espaços. */
+function sameValue(a: unknown, b: unknown): boolean {
+  const normalize = (v: unknown) => (v === null || v === undefined ? '' : String(v).trim());
+  return normalize(a) === normalize(b);
+}
+
 @Component({
   selector: 'app-profile',
-  imports: [ReactiveFormsModule, Header, Footer],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    FontAwesomeModule,
+    Header,
+    Footer,
+    ProfileFreelancer,
+    ProfileEnterprise,
+  ],
   templateUrl: './profile.html',
-  styleUrl: './profile.css',
+  styleUrls: ['./profile-form.css', './profile.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Profile {
+export class Profile implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly auth = inject(AuthService);
+  private readonly enterpriseService = inject(EnterpriseService);
+  private readonly freelancerService = inject(FreelancerService);
+  private readonly tooltip = inject(TooltipService);
   private readonly router = inject(Router);
-  private readonly sinceFmt = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' });
 
   protected readonly minPassword = MIN_PASSWORD;
+  protected readonly role = this.auth.role();
 
-  protected readonly user = signal<UserProfile>(CURRENT_USER);
+  protected readonly icons = {
+    freelancer: faBriefcase,
+    enterprise: faBuilding,
+    complete: faCircleCheck,
+    pending: faTriangleExclamation,
+  };
+
+  /** Dados do usuário: começa com o que está salvo no login e é atualizado pela API. */
+  protected readonly data = signal<ProfileData | null>(this.auth.user()?.data ?? null);
+  protected readonly loading = signal(false);
+
+  /** Grupo de dados pessoais — os campos dependem da role do usuário. */
+  protected readonly personal: FormGroup =
+    this.role === 'Empresa'
+      ? buildEnterpriseForm(inject(FormBuilder))
+      : buildFreelancerForm(inject(FormBuilder));
 
   protected readonly form = this.fb.group(
     {
-      name: [CURRENT_USER.name, [Validators.required, Validators.minLength(3)]],
-      email: [CURRENT_USER.email, [Validators.required, Validators.email]],
+      personal: this.personal,
       newPassword: ['', Validators.minLength(MIN_PASSWORD)],
       currentPassword: [''],
     },
@@ -74,8 +106,16 @@ export class Profile {
   protected readonly saved = signal(false);
   protected readonly submitted = signal(false);
 
+  private readonly personalKeys = Object.keys(this.personal.controls);
+
+  /** Campos sem dados cadastrados na API. */
+  protected readonly pending = computed(() => {
+    const data = this.data();
+    return this.personalKeys.filter((key) => isEmptyValue(this.field(data, key)));
+  });
+
   protected readonly initials = computed(() =>
-    (this.value().name || this.user().name)
+    (this.data()?.nome ?? '')
       .trim()
       .split(/\s+/)
       .filter(Boolean)
@@ -85,14 +125,14 @@ export class Profile {
       .toUpperCase(),
   );
 
-  protected readonly memberSince = computed(() =>
-    this.sinceFmt.format(new Date(`${this.user().memberSince}T12:00:00`)),
-  );
-
   protected readonly dirty = computed(() => {
     const v = this.value();
-    const u = this.user();
-    return v.name !== u.name || v.email !== u.email || !!v.newPassword || !!v.currentPassword;
+    const data = this.data();
+    const personal = (v.personal ?? {}) as Record<string, unknown>;
+    const personalChanged = this.personalKeys.some(
+      (key) => !sameValue(personal[key], this.field(data, key)),
+    );
+    return personalChanged || !!v.newPassword || !!v.currentPassword;
   });
 
   protected readonly canSave = computed(() => this.dirty() && this.status() === 'VALID' && !this.saving());
@@ -115,6 +155,11 @@ export class Profile {
 
   protected readonly strengthBars = [1, 2, 3, 4];
 
+  ngOnInit(): void {
+    this.discard();
+    this.loadProfile();
+  }
+
   protected showError(control: string): boolean {
     const c = this.form.get(control);
     return !!c && c.invalid && (c.touched || this.submitted());
@@ -135,8 +180,11 @@ export class Profile {
   }
 
   protected discard(): void {
-    const u = this.user();
-    this.form.reset({ name: u.name, email: u.email, newPassword: '', currentPassword: '' });
+    const data = this.data();
+    const personal = Object.fromEntries(
+      this.personalKeys.map((key) => [key, this.field(data, key) ?? null]),
+    );
+    this.form.reset({ personal, newPassword: '', currentPassword: '' });
     this.submitted.set(false);
     this.saved.set(false);
   }
@@ -147,15 +195,41 @@ export class Profile {
     if (!this.canSave()) return;
 
     this.saving.set(true);
-    const { name, email } = this.form.getRawValue();
+    const personal = this.personal.getRawValue();
 
-    // TODO: chamar o serviço de usuário (PUT /usuarios/me)
+    // TODO: chamar o PUT de empresa/freelancer quando o endpoint existir
     setTimeout(() => {
-      this.user.update((u) => ({ ...u, name, email }));
+      this.data.update((d) => (d ? { ...d, ...personal } : d));
       this.saving.set(false);
       this.discard();
       this.saved.set(true);
       setTimeout(() => this.saved.set(false), 3500);
     }, 700);
+  }
+
+  private loadProfile(): void {
+    const user = this.auth.user();
+    const id = user?.data.id;
+    if (!user || id === undefined) return;
+
+    const request$: Observable<ProfileData> =
+      user.role === 'Empresa'
+        ? this.enterpriseService.buscarEmpresa(id)
+        : this.freelancerService.buscarFreelancer(id);
+
+    this.loading.set(true);
+    request$.pipe(finalize(() => this.loading.set(false))).subscribe({
+      next: (data) => {
+        // Não sobrescreve o que o usuário já começou a editar
+        const wasDirty = this.dirty();
+        this.data.set(data);
+        if (!wasDirty) this.discard();
+      },
+      error: () => this.tooltip.error('Não foi possível carregar seus dados.'),
+    });
+  }
+
+  private field(data: ProfileData | null, key: string): unknown {
+    return data ? (data as unknown as Record<string, unknown>)[key] : undefined;
   }
 }

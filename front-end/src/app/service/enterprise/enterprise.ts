@@ -29,4 +29,8 @@ export class EnterpriseService {
       { email, senha }
     );
   }
+
+  buscarEmpresa(id: number): Observable<Enterprise> {
+    return this.http.get<Enterprise>(`${this.apiUrl}/${id}`);
+  }
 }

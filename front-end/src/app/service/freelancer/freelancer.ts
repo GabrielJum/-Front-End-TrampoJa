@@ -29,4 +29,8 @@ export class FreelancerService {
       { email, senha }
     );
   }
+
+  buscarFreelancer(id: number): Observable<Freelancer> {
+    return this.http.get<Freelancer>(`${this.apiUrl}/${id}`);
+  }
 }
